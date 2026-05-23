@@ -1,0 +1,4197 @@
+/* ================================================
+   Gemini Aura Organizer — Native blend, nested folders
+   ================================================ */
+
+/* Force correct font (Google Sans like native Gemini) on ALL children */
+#aura-folders-section,
+#aura-folders-section *,
+#aura-right-drawer,
+#aura-right-drawer *,
+#aura-minimap,
+#aura-minimap *,
+#aura-suggestion-chips-container,
+#aura-suggestion-chips-container *,
+.aura-folder-context-menu,
+.aura-folder-context-menu *,
+.aura-assign-menu,
+.aura-assign-menu * {
+  box-sizing: border-box !important;
+  font-family: 'Google Sans Flex', 'Google Sans', 'Helvetica Neue', sans-serif !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+/* ---- WRAPPER ---- */
+#aura-folders-section {
+  display: block !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Container query container definitions for sidebar */
+nav, aside, [role="navigation"], [class*="sidebar"], [class*="navigation"] {
+  container-type: inline-size !important;
+}
+
+/* Automatically hide folders section when sidebar is collapsed/narrow */
+@container (max-width: 180px) {
+  #aura-folders-section {
+    display: none !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+}
+
+/* ---- FOLDERS LIST ---- */
+.aura-folders-list {
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 8px 0 !important;
+  margin: 0 !important;
+  gap: 2px !important;
+}
+
+.aura-global-empty {
+  font-size: 13px !important;
+  color: rgba(255,255,255,0.25) !important;
+  padding: 4px 16px 8px !important;
+  user-select: none !important;
+}
+
+body:not(.dark-theme) .aura-global-empty,
+body[style*="light"] .aura-global-empty,
+.light-theme .aura-global-empty {
+  color: rgba(0,0,0,0.35) !important;
+}
+
+/* ---- PREMIUM CARD CONTAINER ---- */
+.aura-folder-card {
+  margin: 6px 12px 10px 12px !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s !important;
+}
+
+.aura-folder-card:hover {
+  background: rgba(255, 255, 255, 0.045) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+/* Card Drag-Over Highlight (Using CSS :has() for extremely premium native response) */
+.aura-folder-card:has(.aura-folder-row.aura-drag-over) {
+  background: rgba(99, 102, 241, 0.12) !important;
+  border-color: rgba(99, 102, 241, 0.45) !important;
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.15) !important;
+}
+
+/* Light Theme Card Support */
+body:not(.dark-theme) .aura-folder-card,
+body[style*="light"] .aura-folder-card,
+.light-theme .aura-folder-card {
+  background: rgba(0, 0, 0, 0.02) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+body:not(.dark-theme) .aura-folder-card:hover,
+body[style*="light"] .aura-folder-card:hover,
+.light-theme .aura-folder-card:hover {
+  background: rgba(0, 0, 0, 0.035) !important;
+  border-color: rgba(0, 0, 0, 0.13) !important;
+}
+
+body:not(.dark-theme) .aura-folder-card:has(.aura-folder-row.aura-drag-over),
+body[style*="light"] .aura-folder-card:has(.aura-folder-row.aura-drag-over),
+.light-theme .aura-folder-card:has(.aura-folder-row.aura-drag-over) {
+  background: rgba(99, 102, 241, 0.06) !important;
+  border-color: rgba(99, 102, 241, 0.35) !important;
+}
+
+/* ---- FOLDER ROW ---- */
+.aura-folder-row {
+  display: flex !important;
+  align-items: center !important;
+  padding-right: 12px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin: 0 !important;
+  height: 40px !important;
+  border-radius: 0 !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  transition: background 0.12s, color 0.12s !important;
+  background: transparent !important;
+  position: relative !important;
+}
+
+.aura-folder-row:hover {
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+body:not(.dark-theme) .aura-folder-row:hover,
+body[style*="light"] .aura-folder-row:hover,
+.light-theme .aura-folder-row:hover {
+  background: rgba(0, 0, 0, 0.03) !important;
+}
+
+.aura-folder-row.aura-drag-over {
+  background: rgba(99, 102, 241, 0.08) !important;
+}
+
+/* Color folder icon */
+.aura-folder-color-icon {
+  flex-shrink: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  margin-right: 10px !important;
+  width: 16px !important;
+}
+
+/* Folder name */
+.aura-folder-label {
+  flex: 1 !important;
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+body:not(.dark-theme) .aura-folder-label,
+body[style*="light"] .aura-folder-label,
+.light-theme .aura-folder-label {
+  color: rgba(0, 0, 0, 0.85) !important;
+}
+
+/* Action buttons: add-sub / rename / delete */
+.aura-folder-row-actions {
+  display: flex !important;
+  gap: 1px !important;
+  opacity: 0 !important;
+  transition: opacity 0.12s !important;
+  flex-shrink: 0 !important;
+}
+
+.aura-folder-row:hover .aura-folder-row-actions {
+  opacity: 1 !important;
+}
+
+.aura-folder-row-btn {
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 50% !important;
+  border: none !important;
+  background: transparent !important;
+  color: rgba(255, 255, 255, 0.4) !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  transition: background 0.12s, color 0.12s !important;
+}
+
+body:not(.dark-theme) .aura-folder-row-btn,
+body[style*="light"] .aura-folder-row-btn,
+.light-theme .aura-folder-row-btn {
+  color: rgba(0, 0, 0, 0.45) !important;
+}
+
+.aura-folder-row-btn:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+body:not(.dark-theme) .aura-folder-row-btn:hover,
+body[style*="light"] .aura-folder-row-btn:hover,
+.light-theme .aura-folder-row-btn:hover {
+  background: rgba(0, 0, 0, 0.06) !important;
+  color: rgba(0, 0, 0, 0.9) !important;
+}
+
+.aura-folder-row-btn.del:hover {
+  background: rgba(220,38,38,0.15) !important;
+  color: #f87171 !important;
+}
+
+/* ---- FOLDER CHILDREN CONTAINER ---- */
+.aura-folder-children {
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 0 0 4px 0 !important;
+  margin: 0 !important;
+  position: relative !important;
+}
+
+/* ---- L-SHAPED TREE CONNECTOR LINES ---- */
+.aura-folder-children > .aura-folder-row::before {
+  content: "" !important;
+  position: absolute !important;
+  left: var(--parent-center) !important;
+  top: 0 !important;
+  height: 20px !important;
+  width: 8px !important;
+  border-left: 1.5px solid rgba(255, 255, 255, 0.15) !important;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.15) !important;
+  pointer-events: none !important;
+  box-sizing: border-box !important;
+  display: block !important;
+}
+
+.aura-folder-children > .aura-chat-item::before,
+.aura-folder-children > .aura-folder-empty-hint::before {
+  content: "" !important;
+  position: absolute !important;
+  left: var(--parent-center) !important;
+  top: 0 !important;
+  height: 19px !important;
+  width: 18px !important;
+  border-left: 1.5px solid rgba(255, 255, 255, 0.15) !important;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.15) !important;
+  pointer-events: none !important;
+  box-sizing: border-box !important;
+  display: block !important;
+}
+
+/* Vertical line continuation for non-last children */
+.aura-folder-children > .aura-folder-row:not(.aura-last-child)::after,
+.aura-folder-children > .aura-chat-item:not(.aura-last-child)::after,
+.aura-folder-children > .aura-folder-empty-hint:not(.aura-last-child)::after {
+  content: "" !important;
+  position: absolute !important;
+  left: var(--parent-center) !important;
+  top: 0 !important;
+  width: 0 !important;
+  height: 100% !important;
+  border-left: 1.5px solid rgba(255, 255, 255, 0.15) !important;
+  pointer-events: none !important;
+  box-sizing: border-box !important;
+  display: block !important;
+}
+
+/* Bulletproof rule to hide vertical line continuation for last children */
+.aura-folder-children > .aura-chat-item:last-child::after,
+.aura-folder-children > .aura-folder-empty-hint:last-child::after,
+.aura-last-child::after {
+  display: none !important;
+  content: none !important;
+  border-left: none !important;
+}
+
+/* Ancestor vertical guideline for expanded subfolders (e.g. depth 0 guide going through depth 1 children container) */
+.aura-folder-children .aura-folder-children:not(:last-child)::before {
+  content: "" !important;
+  position: absolute !important;
+  left: var(--parent-center-0) !important;
+  top: 0 !important;
+  width: 0 !important;
+  height: 100% !important;
+  border-left: 1.5px solid rgba(255, 255, 255, 0.12) !important;
+  pointer-events: none !important;
+  box-sizing: border-box !important;
+  display: block !important;
+}
+
+/* Light Theme support for tree lines */
+body:not(.dark-theme) .aura-folder-children > .aura-folder-row::before,
+body:not(.dark-theme) .aura-folder-children > .aura-chat-item::before,
+body:not(.dark-theme) .aura-folder-children > .aura-folder-empty-hint::before,
+body[style*="light"] .aura-folder-children > .aura-folder-row::before,
+body[style*="light"] .aura-folder-children > .aura-chat-item::before,
+body[style*="light"] .aura-folder-children > .aura-folder-empty-hint::before,
+.light-theme .aura-folder-children > .aura-folder-row::before,
+.light-theme .aura-folder-children > .aura-chat-item::before,
+.light-theme .aura-folder-children > .aura-folder-empty-hint::before {
+  border-left-color: rgba(0, 0, 0, 0.12) !important;
+  border-bottom-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+body:not(.dark-theme) .aura-folder-children > .aura-folder-row:not(.aura-last-child)::after,
+body:not(.dark-theme) .aura-folder-children > .aura-chat-item:not(.aura-last-child)::after,
+body:not(.dark-theme) .aura-folder-children > .aura-folder-empty-hint:not(.aura-last-child)::after,
+body[style*="light"] .aura-folder-children > .aura-folder-row:not(.aura-last-child)::after,
+body[style*="light"] .aura-folder-children > .aura-chat-item:not(.aura-last-child)::after,
+body[style*="light"] .aura-folder-children > .aura-folder-empty-hint:not(.aura-last-child)::after,
+.light-theme .aura-folder-children > .aura-folder-row:not(.aura-last-child)::after,
+.light-theme .aura-folder-children > .aura-chat-item:not(.aura-last-child)::after,
+.light-theme .aura-folder-children > .aura-folder-empty-hint:not(.aura-last-child)::after {
+  border-left-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+body:not(.dark-theme) .aura-folder-children .aura-folder-children:not(:last-child)::before,
+body[style*="light"] .aura-folder-children .aura-folder-children:not(:last-child)::before,
+.light-theme .aura-folder-children .aura-folder-children:not(:last-child)::before {
+  border-left-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+.aura-folder-empty-hint {
+  padding-right: 12px !important;
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+  font-size: 11.5px !important;
+  font-style: italic !important;
+  color: rgba(255, 255, 255, 0.25) !important;
+  user-select: none !important;
+  position: relative !important;
+}
+
+body:not(.dark-theme) .aura-folder-empty-hint,
+body[style*="light"] .aura-folder-empty-hint,
+.light-theme .aura-folder-empty-hint {
+  color: rgba(0, 0, 0, 0.35) !important;
+}
+
+/* ====================================================
+   CHAT ITEM — blends with native Gemini history items
+   ==================================================== */
+.aura-chat-item {
+  display: flex !important;
+  align-items: center !important;
+  padding-right: 12px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin: 0 !important;
+  height: 38px !important;
+  border-radius: 0 !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  color: rgba(255, 255, 255, 0.65) !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  transition: background 0.12s, color 0.12s !important;
+  position: relative !important;
+}
+
+body:not(.dark-theme) .aura-chat-item,
+body[style*="light"] .aura-chat-item,
+.light-theme .aura-chat-item {
+  color: rgba(0, 0, 0, 0.65) !important;
+}
+
+.aura-chat-item:hover {
+  background: rgba(255, 255, 255, 0.04) !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+body:not(.dark-theme) .aura-chat-item:hover,
+body[style*="light"] .aura-chat-item:hover,
+.light-theme .aura-chat-item:hover {
+  background: rgba(0, 0, 0, 0.025) !important;
+  color: rgba(0, 0, 0, 0.95) !important;
+}
+
+.aura-chat-item.active {
+  background: rgba(255, 255, 255, 0.07) !important;
+  color: #fff !important;
+  font-weight: 500 !important;
+}
+
+body:not(.dark-theme) .aura-chat-item.active,
+body[style*="light"] .aura-chat-item.active,
+.light-theme .aura-chat-item.active {
+  background: rgba(0, 0, 0, 0.05) !important;
+  color: #000 !important;
+}
+
+.aura-chat-item-title-container {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  flex: 1 !important;
+  overflow: hidden !important;
+}
+
+.aura-chat-item-title {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  font-size: 13px !important;
+  font-weight: inherit !important;
+  color: inherit !important;
+}
+
+/* Relative Timestamp style in sidebar */
+.aura-chat-item-time {
+  font-size: 10px !important;
+  color: rgba(255, 255, 255, 0.3) !important;
+  font-weight: 400 !important;
+  margin-top: 1px !important;
+}
+
+body:not(.dark-theme) .aura-chat-item-time,
+body[style*="light"] .aura-chat-item-time,
+.light-theme .aura-chat-item-time {
+  color: rgba(0, 0, 0, 0.4) !important;
+}
+
+.aura-chat-item-remove {
+  width: 18px !important;
+  height: 18px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: rgba(255, 255, 255, 0.25) !important;
+  opacity: 0 !important;
+  transition: opacity 0.12s, color 0.12s, background 0.12s !important;
+  cursor: pointer !important;
+  flex-shrink: 0 !important;
+  margin-left: 4px !important;
+}
+
+body:not(.dark-theme) .aura-chat-item-remove,
+body[style*="light"] .aura-chat-item-remove,
+.light-theme .aura-chat-item-remove {
+  color: rgba(0, 0, 0, 0.3) !important;
+}
+
+.aura-chat-item:hover .aura-chat-item-remove {
+  opacity: 1 !important;
+}
+
+.aura-chat-item-remove:hover {
+  color: #f87171 !important;
+  background: rgba(220, 38, 38, 0.14) !important;
+  opacity: 1 !important;
+}
+
+/* ---- ADD FOLDER BUTTON (at bottom of list) ---- */
+.aura-add-folder-btn {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 0 12px !important;
+  margin: 6px 12px 12px 12px !important;
+  height: 38px !important;
+  border-radius: 8px !important;
+  border: none !important;
+  background: transparent !important;
+  color: rgba(255, 255, 255, 0.35) !important;
+  cursor: pointer !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  text-align: left !important;
+  transition: background 0.12s, color 0.12s !important;
+  width: calc(100% - 24px) !important;
+}
+
+body:not(.dark-theme) .aura-add-folder-btn,
+body[style*="light"] .aura-add-folder-btn,
+.light-theme .aura-add-folder-btn {
+  color: rgba(0, 0, 0, 0.45) !important;
+}
+
+.aura-add-folder-btn:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+body:not(.dark-theme) .aura-add-folder-btn:hover,
+body[style*="light"] .aura-add-folder-btn:hover,
+.light-theme .aura-add-folder-btn:hover {
+  background: rgba(0, 0, 0, 0.035) !important;
+  color: rgba(0, 0, 0, 0.8) !important;
+}
+
+/* ---- DRAG STATES ---- */
+.aura-native-dragging {
+  opacity: 0.35 !important;
+}
+
+/* ---- QUICK ASSIGN BUTTON ---- */
+.aura-quick-assign-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 50% !important;
+  border: none !important;
+  background: transparent !important;
+  color: rgba(255, 255, 255, 0.3) !important;
+  cursor: pointer !important;
+  opacity: 0 !important;
+  transition: opacity 0.15s, background 0.15s !important;
+  flex-shrink: 0 !important;
+  padding: 0 !important;
+}
+
+body:not(.dark-theme) .aura-quick-assign-btn,
+body[style*="light"] .aura-quick-assign-btn,
+.light-theme .aura-quick-assign-btn {
+  color: rgba(0, 0, 0, 0.35) !important;
+}
+
+*:hover > .aura-quick-assign-btn,
+.aura-quick-assign-btn.active {
+  opacity: 1 !important;
+}
+
+.aura-quick-assign-btn:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+body:not(.dark-theme) .aura-quick-assign-btn:hover,
+body[style*="light"] .aura-quick-assign-btn:hover,
+.light-theme .aura-quick-assign-btn:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+  color: rgba(0, 0, 0, 0.8) !important;
+}
+
+/* ---- QUICK ASSIGN MENU ---- */
+.aura-assign-menu {
+  position: fixed !important;
+  z-index: 999999 !important;
+  min-width: 190px !important;
+  background: #1f1f1f !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.6) !important;
+  padding: 5px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  animation: aura-menu-in 0.13s ease !important;
+  font-family: 'Google Sans Flex', 'Google Sans', 'Helvetica Neue', sans-serif !important;
+}
+
+@keyframes aura-menu-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.aura-menu-title {
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  color: rgba(255,255,255,0.28) !important;
+  padding: 4px 10px 6px !important;
+  letter-spacing: 0.5px !important;
+  text-transform: uppercase !important;
+  border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+  margin-bottom: 2px !important;
+}
+
+.aura-menu-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 7px 10px !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  color: rgba(255,255,255,0.85) !important;
+  cursor: pointer !important;
+  transition: background 0.1s !important;
+  user-select: none !important;
+}
+
+.aura-menu-item:hover { background: rgba(255,255,255,0.07) !important; }
+.aura-menu-item.active { color: #a5b4fc !important; background: rgba(99,102,241,0.15) !important; font-weight: 500 !important; }
+.aura-menu-item.text-danger { color: #f87171 !important; }
+.aura-menu-item.text-danger:hover { background: rgba(220,38,38,0.1) !important; }
+
+.aura-menu-divider {
+  height: 1px !important;
+  background: rgba(255,255,255,0.06) !important;
+  margin: 3px 0 !important;
+}
+
+
+/* ====================================================
+   ✨ PREMIUM 4 FEATURES STYLES
+   ==================================================== */
+
+/* ---- 📝 QUICK NOTES & BOOKMARKS DRAWER ---- */
+#aura-right-drawer {
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  width: 320px !important;
+  height: 100vh !important;
+  z-index: 2147483647 !important;
+  /* Match Gemini's sidebar background exactly */
+  background: #1f1f1f !important;
+  border-left: none !important;
+  box-shadow: -2px 0 24px rgba(0, 0, 0, 0.5) !important;
+  transform: translateX(100%) !important;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  font-family: 'Google Sans Flex', 'Google Sans', 'Helvetica Neue', sans-serif !important;
+}
+
+/* Light Theme Drawer Background */
+body:not(.dark-theme) #aura-right-drawer,
+body[style*="light"] #aura-right-drawer,
+.light-theme #aura-right-drawer {
+  background: #f8f9fa !important;
+  border-left: none !important;
+  box-shadow: -2px 0 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+#aura-right-drawer.open {
+  transform: translateX(0) !important;
+}
+
+/* Floating toggle button */
+#aura-right-drawer-toggle {
+  position: fixed !important;
+  right: 0 !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 20px !important;
+  height: 64px !important;
+  z-index: 2147483647 !important;
+  background: rgba(19, 19, 20, 0.8) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-right: none !important;
+  border-radius: 8px 0 0 8px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: rgba(255, 255, 255, 0.4) !important;
+  transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.15s, background 0.15s !important;
+  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.2) !important;
+}
+
+body:not(.dark-theme) #aura-right-drawer-toggle,
+body[style*="light"] #aura-right-drawer-toggle,
+.light-theme #aura-right-drawer-toggle {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+  color: rgba(0, 0, 0, 0.4) !important;
+  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.04) !important;
+}
+
+#aura-right-drawer-toggle:hover {
+  background: rgba(99, 102, 241, 0.12) !important;
+  color: #818cf8 !important;
+  border-color: rgba(99, 102, 241, 0.3) !important;
+}
+
+#aura-right-drawer.open + #aura-right-drawer-toggle,
+#aura-right-drawer.open #aura-right-drawer-toggle {
+  right: 320px !important;
+}
+
+/* Drawer Header — tabs only, no title */
+.aura-drawer-header {
+  padding: 12px 12px 10px !important;
+  border-bottom: none !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+body:not(.dark-theme) .aura-drawer-header,
+body[style*="light"] .aura-drawer-header,
+.light-theme .aura-drawer-header {
+  border-bottom: none !important;
+}
+
+.aura-drawer-title {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  margin: 0 0 14px 0 !important;
+  display: block !important;
+  text-align: center !important;
+  width: 100% !important;
+  letter-spacing: 0.6px !important;
+  font-family: 'Google Sans Flex', 'Google Sans', 'Helvetica Neue', sans-serif !important;
+  background: linear-gradient(135deg, #c4b5fd 0%, #818cf8 50%, #6366f1 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+body:not(.dark-theme) .aura-drawer-title,
+body[style*="light"] .aura-drawer-title,
+.light-theme .aura-drawer-title {
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 50%, #7c3aed 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+/* Hide legacy pencil/edit icon in drawer header */
+.aura-drawer-header > button,
+.aura-drawer-header .aura-edit-btn,
+.aura-drawer-header .aura-drawer-edit-btn {
+  display: none !important;
+}
+
+/* Tab container — no border, subtle dark bg */
+.aura-drawer-tabs {
+  display: flex !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: none !important;
+  border-radius: 20px !important;
+  padding: 4px !important;
+  gap: 2px !important;
+}
+
+body:not(.dark-theme) .aura-drawer-tabs,
+body[style*="light"] .aura-drawer-tabs,
+.light-theme .aura-drawer-tabs {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border: none !important;
+}
+
+/* Tab buttons — Gemini style: glow bg when active, no border */
+.aura-drawer-tab {
+  flex: 1 !important;
+  padding: 8px 6px !important;
+  border: none !important;
+  background: transparent !important;
+  color: rgba(255, 255, 255, 0.45) !important;
+  font-size: 10.5px !important;
+  font-weight: 500 !important;
+  border-radius: 16px !important;
+  cursor: pointer !important;
+  text-align: center !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  transition: background 0.18s ease, color 0.18s ease !important;
+  line-height: 1.2 !important;
+  font-family: 'Google Sans Flex', 'Google Sans', 'Helvetica Neue', sans-serif !important;
+}
+
+.aura-drawer-tab svg {
+  width: 14px !important;
+  height: 14px !important;
+  flex-shrink: 0 !important;
+  stroke-width: 1.8 !important;
+}
+
+body:not(.dark-theme) .aura-drawer-tab,
+body[style*="light"] .aura-drawer-tab,
+.light-theme .aura-drawer-tab {
+  color: rgba(0, 0, 0, 0.45) !important;
+}
+
+.aura-drawer-tab:hover {
+  background: rgba(255, 255, 255, 0.07) !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+body:not(.dark-theme) .aura-drawer-tab:hover,
+body[style*="light"] .aura-drawer-tab:hover,
+.light-theme .aura-drawer-tab:hover {
+  background: rgba(0, 0, 0, 0.06) !important;
+  color: rgba(0, 0, 0, 0.85) !important;
+}
+
+/* Active tab: bright white bg glow, no border */
+.aura-drawer-tab.active {
+  background: rgba(255, 255, 255, 0.11) !important;
+  border: none !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+body:not(.dark-theme) .aura-drawer-tab.active,
+body[style*="light"] .aura-drawer-tab.active,
+.light-theme .aura-drawer-tab.active {
+  background: rgba(0, 0, 0, 0.08) !important;
+  border: none !important;
+  color: rgba(0, 0, 0, 0.9) !important;
+}
+
+/* Drawer Body */
+.aura-drawer-body {
+  flex: 1 !important;
+  overflow: hidden !important;
+  padding: 16px !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.aura-drawer-body::-webkit-scrollbar {
+  width: 4px !important;
+}
+
+.aura-drawer-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 2px !important;
+}
+
+/* Notes View */
+.aura-notes-view {
+  display: none !important;
+  flex: 1 !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  gap: 12px !important;
+}
+
+.aura-notes-view.active {
+  display: flex !important;
+}
+
+.aura-notes-editor-card {
+  padding: 14px 16px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 !important;
+  overflow: hidden !important;
+  height: 100% !important;
+  gap: 12px !important;
+}
+
+.aura-notes-editor-container {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 !important;
+  overflow: hidden !important;
+}
+
+.aura-notes-editor {
+  flex: 1 !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  word-break: break-word !important;
+  background: rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-radius: 10px !important;
+  padding: 12px 14px !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: 13px !important;
+  line-height: 1.6 !important;
+  resize: none !important;
+  outline: none !important;
+  font-family: 'Google Sans Flex', 'Google Sans', 'Helvetica Neue', sans-serif !important;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+  transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
+              background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.aura-notes-editor::placeholder {
+  color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Light Theme */
+body:not(.dark-theme) .aura-notes-editor,
+body[style*="light"] .aura-notes-editor,
+.light-theme .aura-notes-editor {
+  background: rgba(0, 0, 0, 0.015) !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+  color: rgba(0, 0, 0, 0.8) !important;
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.03) !important;
+}
+
+body:not(.dark-theme) .aura-notes-editor::placeholder,
+body[style*="light"] .aura-notes-editor::placeholder,
+.light-theme .aura-notes-editor::placeholder {
+  color: rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Focus States */
+.aura-notes-editor:focus {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border-color: rgba(48, 135, 255, 0.4) !important;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2), 0 0 12px rgba(48, 135, 255, 0.15) !important;
+}
+
+body:not(.dark-theme) .aura-notes-editor:focus,
+body[style*="light"] .aura-notes-editor:focus,
+.light-theme .aura-notes-editor:focus {
+  background: rgba(0, 0, 0, 0.02) !important;
+  border-color: rgba(48, 135, 255, 0.5) !important;
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.03), 0 0 8px rgba(48, 135, 255, 0.15) !important;
+}
+
+.aura-notes-actions {
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 8px !important;
+  margin-top: 10px !important;
+}
+
+/* Action buttons — Google pill style */
+.aura-notes-btn {
+  padding: 7px 18px !important;
+  border-radius: 50px !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  font-family: 'Google Sans Flex', 'Google Sans', 'Helvetica Neue', sans-serif !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.1s !important;
+  letter-spacing: 0.2px !important;
+}
+
+body:not(.dark-theme) .aura-notes-btn,
+body[style*="light"] .aura-notes-btn,
+.light-theme .aura-notes-btn {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
+  color: rgba(0, 0, 0, 0.7) !important;
+}
+
+.aura-notes-btn:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
+}
+
+body:not(.dark-theme) .aura-notes-btn:hover,
+body[style*="light"] .aura-notes-btn:hover,
+.light-theme .aura-notes-btn:hover {
+  background: rgba(0, 0, 0, 0.07) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  color: #000 !important;
+}
+
+.aura-notes-btn:active {
+  transform: scale(0.97) !important;
+}
+
+/* Primary button — brand blue gradient with shadow */
+.aura-notes-btn.primary {
+  background: linear-gradient(135deg, #3087ff, #1a75ff) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(48, 135, 255, 0.25) !important;
+}
+
+body:not(.dark-theme) .aura-notes-btn.primary,
+body[style*="light"] .aura-notes-btn.primary,
+.light-theme .aura-notes-btn.primary {
+  background: linear-gradient(135deg, #3087ff, #1a75ff) !important;
+  border: none !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(48, 135, 255, 0.15) !important;
+}
+
+.aura-notes-btn.primary:hover {
+  background: linear-gradient(135deg, #1a75ff, #005ce6) !important;
+  box-shadow: 0 6px 16px rgba(48, 135, 255, 0.35) !important;
+  color: #fff !important;
+}
+
+body:not(.dark-theme) .aura-notes-btn.primary:hover,
+body[style*="light"] .aura-notes-btn.primary:hover,
+.light-theme .aura-notes-btn.primary:hover {
+  background: linear-gradient(135deg, #1a75ff, #005ce6) !important;
+  box-shadow: 0 6px 16px rgba(48, 135, 255, 0.25) !important;
+  color: #fff !important;
+}
+
+.aura-notes-save-indicator {
+  font-size: 11px !important;
+  color: rgba(255, 255, 255, 0.35) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  margin-right: auto !important;
+  align-self: center !important;
+}
+
+body:not(.dark-theme) .aura-notes-save-indicator,
+body[style*="light"] .aura-notes-save-indicator,
+.light-theme .aura-notes-save-indicator {
+  color: rgba(0, 0, 0, 0.35) !important;
+}
+
+
+
+
+/* ---- 🗺️ VS CODE-LIKE MINIMAP ---- */
+#aura-minimap {
+  position: fixed !important;
+  top: 80px !important;
+  bottom: 40px !important;
+  right: 12px !important;
+  width: 36px !important;
+  z-index: 999980 !important;
+  background: rgba(255, 255, 255, 0.01) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.02) !important;
+  transition: opacity 0.3s, right 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  user-select: none !important;
+}
+
+#aura-minimap:hover {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border-left-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Adjust minimap position when drawer is open */
+#aura-right-drawer.open ~ #aura-minimap {
+  right: 332px !important;
+}
+
+/* Chat bubble ticks */
+.aura-minimap-tick {
+  position: absolute !important;
+  left: 3px !important;
+  right: 3px !important;
+  border-radius: 1px !important;
+  opacity: 0.75 !important;
+  transition: opacity 0.2s !important;
+}
+
+.aura-minimap-tick:hover {
+  opacity: 1 !important;
+}
+
+.aura-minimap-tick.prompt {
+  background: #6366f1 !important;
+  box-shadow: 0 0 2px rgba(99, 102, 241, 0.5) !important;
+}
+
+.aura-minimap-tick.response {
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* Viewport slider */
+#aura-minimap-viewport {
+  position: absolute !important;
+  left: 0 !important;
+  width: 100% !important;
+  background: rgba(99, 102, 241, 0.13) !important;
+  border: 1px solid rgba(99, 102, 241, 0.38) !important;
+  border-radius: 3px !important;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3) !important;
+  cursor: grab !important;
+  z-index: 100 !important;
+}
+
+#aura-minimap-viewport:active {
+  cursor: grabbing !important;
+  background: rgba(99, 102, 241, 0.2) !important;
+}
+
+
+/* ---- ✨ SMART FOLLOW-UPS (SUGGESTION CHIPS) ---- */
+#aura-suggestion-chips-container {
+  display: flex !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+  padding: 8px 12px 14px !important;
+  width: 100% !important;
+  max-width: 820px !important;
+  margin: 0 auto !important;
+  justify-content: center !important;
+  animation: aura-fade-in-up 0.4s ease-out !important;
+  z-index: 5 !important;
+}
+
+@keyframes aura-fade-in-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.aura-suggestion-chip {
+  padding: 6px 13px !important;
+  border-radius: 18px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: rgba(255, 255, 255, 0.82) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  cursor: pointer !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  white-space: nowrap !important;
+  user-select: none !important;
+}
+
+.aura-suggestion-chip:hover {
+  color: #fff !important;
+  background: rgba(99, 102, 241, 0.12) !important;
+  border-color: rgba(99, 102, 241, 0.4) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.15) !important;
+}
+
+.aura-suggestion-chip:active {
+  transform: translateY(0) !important;
+}
+
+
+/* ====================================================
+   💡 DEFENSIVE LAYOUT SHIFT WHEN DRAWER OPEN
+   ==================================================== */
+
+/* Top-level / Main containers: Shift by 320px */
+body.aura-drawer-open main,
+body.aura-drawer-open [role="main"],
+body.aura-drawer-open .chat-view,
+body.aura-drawer-open chat-view,
+body.aura-drawer-open .main-content,
+body.aura-drawer-open main-content,
+body.aura-drawer-open .chat-container,
+body.aura-drawer-open [class*="chat-container"],
+body.aura-drawer-open [class*="conversation-container"],
+body.aura-drawer-open form,
+body.aura-drawer-open .input-area,
+body.aura-drawer-open [class*="input-area"],
+body.aura-drawer-open [class*="textarea-container"] {
+  margin-right: 320px !important;
+}
+
+/* Prevent double-shifting for elements nested inside main or role="main" */
+body.aura-drawer-open main .chat-view,
+body.aura-drawer-open main chat-view,
+body.aura-drawer-open main .main-content,
+body.aura-drawer-open main main-content,
+body.aura-drawer-open main .chat-container,
+body.aura-drawer-open main [class*="chat-container"],
+body.aura-drawer-open main [class*="conversation-container"],
+body.aura-drawer-open main form,
+body.aura-drawer-open main .input-area,
+body.aura-drawer-open main [class*="input-area"],
+body.aura-drawer-open main [class*="textarea-container"],
+body.aura-drawer-open [role="main"] .chat-view,
+body.aura-drawer-open [role="main"] chat-view,
+body.aura-drawer-open [role="main"] .main-content,
+body.aura-drawer-open [role="main"] main-content,
+body.aura-drawer-open [role="main"] .chat-container,
+body.aura-drawer-open [role="main"] [class*="chat-container"],
+body.aura-drawer-open [role="main"] [class*="conversation-container"],
+body.aura-drawer-open [role="main"] form,
+body.aura-drawer-open [role="main"] .input-area,
+body.aura-drawer-open [role="main"] [class*="input-area"],
+body.aura-drawer-open [role="main"] [class*="textarea-container"] {
+  margin-right: 0 !important;
+}
+
+/* Smooth transitions for a high-end, premium experience */
+main,
+[role="main"],
+.chat-view,
+chat-view,
+.main-content,
+main-content,
+.chat-container,
+[class*="chat-container"],
+[class*="conversation-container"],
+form,
+.input-area,
+[class*="input-area"],
+[class*="textarea-container"] {
+  transition: margin-right 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              padding-right 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              width 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* ====================================================
+   📁 PREMIUM CHATGPT-STYLE FOLDER CONTEXT MENU
+   ==================================================== */
+.aura-folder-context-menu {
+  position: fixed !important;
+  z-index: 10000000 !important;
+  width: 210px !important;
+  background: rgba(31, 31, 31, 0.9) !important;
+  backdrop-filter: blur(24px) -webkit-backdrop-filter: blur(24px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5) !important;
+  padding: 6px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  animation: aura-context-menu-in 0.15s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  user-select: none !important;
+  font-family: 'Google Sans Flex', 'Google Sans', 'Helvetica Neue', sans-serif !important;
+}
+
+@keyframes aura-context-menu-in {
+  from { opacity: 0; transform: scale(0.96) translateY(-4px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.aura-context-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 8px 12px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  transition: background 0.12s, color 0.12s !important;
+}
+
+.aura-context-item:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #fff !important;
+}
+
+.aura-context-item svg {
+  flex-shrink: 0 !important;
+  width: 14px !important;
+  height: 14px !important;
+  opacity: 0.6 !important;
+  transition: opacity 0.12s !important;
+}
+
+.aura-context-item:hover svg {
+  opacity: 0.9 !important;
+}
+
+.aura-context-item.delete.text-danger {
+  color: #f87171 !important;
+}
+
+.aura-context-item.delete.text-danger:hover {
+  background: rgba(220, 38, 38, 0.12) !important;
+  color: #f87171 !important;
+}
+
+.aura-context-item.delete.text-danger:hover svg {
+  opacity: 1 !important;
+  stroke: #f87171 !important;
+}
+
+.aura-context-divider {
+  height: 1px !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  margin: 4px 6px !important;
+}
+
+/* Premium Modern Toggle Switch for Settings */
+.aura-switch {
+  position: relative !important;
+  display: inline-block !important;
+  width: 36px !important;
+  height: 20px !important;
+  flex-shrink: 0 !important;
+}
+
+.aura-switch input {
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.aura-switch-slider {
+  position: absolute !important;
+  cursor: pointer !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+  border-radius: 20px !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+.aura-switch-slider:before {
+  position: absolute !important;
+  content: "" !important;
+  height: 14px !important;
+  width: 14px !important;
+  left: 2px !important;
+  bottom: 2px !important;
+  background-color: #c4c7c5 !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+  border-radius: 50% !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+}
+
+.aura-switch input:checked + .aura-switch-slider {
+  background-color: #3087ff !important;
+  border-color: #3087ff !important;
+}
+
+.aura-switch input:checked + .aura-switch-slider:before {
+  transform: translateX(16px) !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Light Theme Switch Support */
+body:not(.dark-theme) .aura-switch-slider,
+body[style*="light"] .aura-switch-slider,
+.light-theme .aura-switch-slider {
+  background-color: rgba(0, 0, 0, 0.08) !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+body:not(.dark-theme) .aura-switch-slider:before,
+body[style*="light"] .aura-switch-slider:before,
+.light-theme .aura-switch-slider:before {
+  background-color: #ffffff !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+body:not(.dark-theme) .aura-switch input:checked + .aura-switch-slider,
+body[style*="light"] .aura-switch input:checked + .aura-switch-slider,
+.light-theme .aura-switch input:checked + .aura-switch-slider {
+  background-color: #3087ff !important;
+  border-color: #3087ff !important;
+}
+
+body:not(.dark-theme) .aura-switch input:checked + .aura-switch-slider:before,
+body[style*="light"] .aura-switch input:checked + .aura-switch-slider:before,
+.light-theme .aura-switch input:checked + .aura-switch-slider:before {
+  background-color: #ffffff !important;
+}
+
+/* Container for toggle switches in settings */
+.aura-settings-toggle-field {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-top: 15px !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+  padding: 8px 12px !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(255, 255, 255, 0.04) !important;
+}
+
+/* Light Theme support for toggle field */
+body:not(.dark-theme) .aura-settings-toggle-field,
+body[style*="light"] .aura-settings-toggle-field,
+.light-theme .aura-settings-toggle-field {
+  background: rgba(0, 0, 0, 0.02) !important;
+  border-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+
+
+
+/* ====================================================
+   ✨ PREMIUM CHATGPT-STYLE CHAT OUTLINE VIEW
+   ==================================================== */
+.aura-outline-view {
+  display: none !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  height: 100% !important;
+}
+
+.aura-outline-view.active {
+  display: flex !important;
+}
+
+/* === REDESIGNED OUTLINE ITEMS === */
+.aura-outline-item {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 10px !important;
+  padding: 10px 14px !important;
+  margin-bottom: 6px !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  position: relative !important;
+  user-select: none !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
+              background-color 0.25s ease, 
+              border-color 0.25s ease, 
+              box-shadow 0.25s ease !important;
+}
+
+/* Hover state with premium vertical translate and soft shadow */
+.aura-outline-item:hover {
+  transform: translateY(-1.5px) scale(1.01) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(48, 135, 255, 0.15) !important;
+  box-shadow: 0 6px 20px rgba(48, 135, 255, 0.04) !important;
+}
+
+.aura-outline-item:active {
+  transform: scale(0.99) !important;
+}
+
+body:not(.dark-theme) .aura-outline-item,
+body[style*="light"] .aura-outline-item,
+.light-theme .aura-outline-item {
+  background: rgba(0, 0, 0, 0.015) !important;
+  border-color: rgba(0, 0, 0, 0.05) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.01) !important;
+}
+
+body:not(.dark-theme) .aura-outline-item:hover,
+body[style*="light"] .aura-outline-item:hover,
+.light-theme .aura-outline-item:hover {
+  background: rgba(0, 0, 0, 0.025) !important;
+  border-color: rgba(48, 135, 255, 0.2) !important;
+  box-shadow: 0 4px 12px rgba(48, 135, 255, 0.03) !important;
+}
+
+/* === PROMPT ITEMS (user messages) — brand blue card tint and left marker line === */
+.aura-outline-item.prompt {
+  background: rgba(48, 135, 255, 0.06) !important;
+  border: 1px solid rgba(48, 135, 255, 0.18) !important;
+}
+
+.aura-outline-item.prompt::before {
+  content: '' !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 8px !important;
+  bottom: 8px !important;
+  width: 3px !important;
+  border-radius: 0 3px 3px 0 !important;
+  background: linear-gradient(to bottom, #3087ff, #1a75ff) !important;
+}
+
+.aura-outline-item.prompt .aura-outline-text {
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  white-space: normal !important;
+  line-height: 1.45 !important;
+}
+
+.aura-outline-item.prompt .aura-outline-bullet {
+  color: #3087ff !important;
+  font-size: 13px !important;
+  margin-top: 1px !important;
+  flex-shrink: 0 !important;
+}
+
+body:not(.dark-theme) .aura-outline-item.prompt,
+body[style*="light"] .aura-outline-item.prompt,
+.light-theme .aura-outline-item.prompt {
+  background: rgba(48, 135, 255, 0.04) !important;
+  border-color: rgba(48, 135, 255, 0.15) !important;
+}
+
+body:not(.dark-theme) .aura-outline-item.prompt .aura-outline-text,
+body[style*="light"] .aura-outline-item.prompt .aura-outline-text,
+.light-theme .aura-outline-item.prompt .aura-outline-text {
+  color: rgba(0, 0, 0, 0.88) !important;
+}
+
+/* === HEADING LEVELS === */
+.aura-outline-item.heading-l1 {
+  padding-left: 12px !important;
+}
+
+.aura-outline-item.heading-l1 .aura-outline-text {
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+  white-space: normal !important;
+  line-height: 1.4 !important;
+}
+
+.aura-outline-item.heading-l1 .aura-outline-bullet {
+  color: rgba(255, 255, 255, 0.5) !important;
+  font-size: 12px !important;
+  flex-shrink: 0 !important;
+  margin-top: 2px !important;
+}
+
+.aura-outline-item.heading-l1:hover .aura-outline-bullet {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+body:not(.dark-theme) .aura-outline-item.heading-l1 .aura-outline-bullet,
+body[style*="light"] .aura-outline-item.heading-l1 .aura-outline-bullet,
+.light-theme .aura-outline-item.heading-l1 .aura-outline-bullet {
+  color: rgba(0, 0, 0, 0.4) !important;
+}
+
+body:not(.dark-theme) .aura-outline-item.heading-l1:hover .aura-outline-bullet,
+body[style*="light"] .aura-outline-item.heading-l1:hover .aura-outline-bullet,
+.light-theme .aura-outline-item.heading-l1:hover .aura-outline-bullet {
+  color: rgba(0, 0, 0, 0.7) !important;
+}
+
+body:not(.dark-theme) .aura-outline-item.heading-l1 .aura-outline-text,
+body[style*="light"] .aura-outline-item.heading-l1 .aura-outline-text,
+.light-theme .aura-outline-item.heading-l1 .aura-outline-text {
+  color: rgba(0, 0, 0, 0.88) !important;
+}
+
+.aura-outline-item.heading-l2 {
+  padding-left: 20px !important;
+}
+
+.aura-outline-item.heading-l2 .aura-outline-text {
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  color: rgba(255, 255, 255, 0.68) !important;
+  white-space: normal !important;
+  line-height: 1.4 !important;
+}
+
+.aura-outline-item.heading-l2 .aura-outline-bullet {
+  color: rgba(255, 255, 255, 0.3) !important;
+  font-size: 11px !important;
+  flex-shrink: 0 !important;
+  margin-top: 2px !important;
+}
+
+body:not(.dark-theme) .aura-outline-item.heading-l2 .aura-outline-bullet,
+body[style*="light"] .aura-outline-item.heading-l2 .aura-outline-bullet,
+.light-theme .aura-outline-item.heading-l2 .aura-outline-bullet {
+  color: rgba(0, 0, 0, 0.3) !important;
+}
+
+body:not(.dark-theme) .aura-outline-item.heading-l2:hover .aura-outline-bullet,
+body[style*="light"] .aura-outline-item.heading-l2:hover .aura-outline-bullet,
+.light-theme .aura-outline-item.heading-l2:hover .aura-outline-bullet {
+  color: rgba(0, 0, 0, 0.5) !important;
+}
+
+body:not(.dark-theme) .aura-outline-item.heading-l2 .aura-outline-text,
+body[style*="light"] .aura-outline-item.heading-l2 .aura-outline-text,
+.light-theme .aura-outline-item.heading-l2 .aura-outline-text {
+  color: rgba(0, 0, 0, 0.62) !important;
+}
+
+.aura-outline-item.heading-l3 {
+  padding-left: 28px !important;
+}
+
+.aura-outline-item.heading-l3 .aura-outline-text {
+  font-size: 11.5px !important;
+  font-weight: 400 !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+  white-space: normal !important;
+  line-height: 1.4 !important;
+}
+
+.aura-outline-item.heading-l3 .aura-outline-bullet {
+  color: rgba(255, 255, 255, 0.22) !important;
+  font-size: 10px !important;
+  flex-shrink: 0 !important;
+  margin-top: 2px !important;
+}
+
+body:not(.dark-theme) .aura-outline-item.heading-l3 .aura-outline-bullet,
+body[style*="light"] .aura-outline-item.heading-l3 .aura-outline-bullet,
+.light-theme .aura-outline-item.heading-l3 .aura-outline-bullet {
+  color: rgba(0, 0, 0, 0.22) !important;
+}
+
+body:not(.dark-theme) .aura-outline-item.heading-l3:hover .aura-outline-bullet,
+body[style*="light"] .aura-outline-item.heading-l3:hover .aura-outline-bullet,
+.light-theme .aura-outline-item.heading-l3:hover .aura-outline-bullet {
+  color: rgba(0, 0, 0, 0.4) !important;
+}
+
+body:not(.dark-theme) .aura-outline-item.heading-l3 .aura-outline-text,
+body[style*="light"] .aura-outline-item.heading-l3 .aura-outline-text,
+.light-theme .aura-outline-item.heading-l3 .aura-outline-text {
+  color: rgba(0, 0, 0, 0.48) !important;
+}
+
+.aura-outline-item.heading-l4 {
+  padding-left: 36px !important;
+}
+
+.aura-outline-item.heading-l4 .aura-outline-text {
+  font-size: 11px !important;
+  font-weight: 400 !important;
+  color: rgba(255, 255, 255, 0.38) !important;
+  white-space: normal !important;
+  line-height: 1.4 !important;
+}
+
+.aura-outline-item.heading-l4 .aura-outline-bullet {
+  color: rgba(255, 255, 255, 0.18) !important;
+  font-size: 9.5px !important;
+  flex-shrink: 0 !important;
+  margin-top: 2px !important;
+}
+
+body:not(.dark-theme) .aura-outline-item.heading-l4 .aura-outline-bullet,
+body[style*="light"] .aura-outline-item.heading-l4 .aura-outline-bullet,
+.light-theme .aura-outline-item.heading-l4 .aura-outline-bullet {
+  color: rgba(0, 0, 0, 0.18) !important;
+}
+
+body:not(.dark-theme) .aura-outline-item.heading-l4:hover .aura-outline-bullet,
+body[style*="light"] .aura-outline-item.heading-l4:hover .aura-outline-bullet,
+.light-theme .aura-outline-item.heading-l4:hover .aura-outline-bullet {
+  color: rgba(0, 0, 0, 0.35) !important;
+}
+
+body:not(.dark-theme) .aura-outline-item.heading-l4 .aura-outline-text,
+body[style*="light"] .aura-outline-item.heading-l4 .aura-outline-text,
+.light-theme .aura-outline-item.heading-l4 .aura-outline-text {
+  color: rgba(0, 0, 0, 0.36) !important;
+}
+
+/* General outline text — allow wrapping for readability */
+.aura-outline-bullet {
+  font-size: 11px !important;
+  color: rgba(255, 255, 255, 0.3) !important;
+  flex-shrink: 0 !important;
+  line-height: 1 !important;
+}
+
+body:not(.dark-theme) .aura-outline-bullet,
+body[style*="light"] .aura-outline-bullet,
+.light-theme .aura-outline-bullet {
+  color: rgba(0, 0, 0, 0.3) !important;
+}
+
+.aura-outline-text {
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+  flex: 1 !important;
+  text-align: left !important;
+  font-family: 'Google Sans Flex', 'Google Sans', 'Helvetica Neue', sans-serif !important;
+  line-height: 1.45 !important;
+}
+
+.aura-outline-empty {
+  padding: 32px 16px !important;
+  text-align: center !important;
+  font-size: 13px !important;
+  color: rgba(255, 255, 255, 0.4) !important;
+  line-height: 1.5 !important;
+  user-select: none !important;
+  font-family: 'Google Sans Flex', 'Google Sans', 'Helvetica Neue', sans-serif !important;
+  font-style: italic !important;
+}
+
+body:not(.dark-theme) .aura-outline-empty,
+body[style*="light"] .aura-outline-empty,
+.light-theme .aura-outline-empty {
+  color: rgba(0, 0, 0, 0.45) !important;
+}
+
+
+
+/* ====================================================
+   ✨ PREMIUM CHATGPT-STYLE SMART FOLLOW-UPS
+   ==================================================== */
+.aura-followups-container {
+  margin-top: 18px !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  padding: 16px 0 8px 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+}
+
+.aura-followups-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-bottom: 4px !important;
+  padding: 0 4px !important;
+}
+
+.aura-followups-title {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.aura-followups-actions {
+  display: flex !important;
+  gap: 6px !important;
+}
+
+.aura-followups-btn {
+  background: transparent !important;
+  border: none !important;
+  color: rgba(255, 255, 255, 0.35) !important;
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: background 0.12s, color 0.12s !important;
+  padding: 0 !important;
+}
+
+.aura-followups-btn:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #fff !important;
+}
+
+.aura-followups-list {
+  display: flex !important;
+  flex-direction: column !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+
+.aura-followup-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 10px 14px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  cursor: pointer !important;
+  transition: background 0.15s !important;
+}
+
+.aura-followup-item:hover {
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+.aura-followup-item:last-child {
+  border-bottom: none !important;
+}
+
+.aura-followup-arrow {
+  color: rgba(255, 255, 255, 0.3) !important;
+  font-size: 13px !important;
+  font-weight: bold !important;
+  transition: color 0.12s, transform 0.12s !important;
+}
+
+.aura-followup-item:hover .aura-followup-arrow {
+  color: #6366f1 !important;
+  transform: translateX(2px) !important;
+}
+
+.aura-followup-text {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+  transition: color 0.12s !important;
+  text-align: left !important;
+}
+
+.aura-followup-item:hover .aura-followup-text {
+  color: #fff !important;
+}
+
+/* ---- ⚙️ SETTINGS VIEW (Premium Redesign) ---- */
+/* ---- ⚙️ SETTINGS VIEW (Premium Redesign) ---- */
+.aura-settings-view {
+  display: none !important;
+  flex: 1 !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+  overflow-y: auto !important;
+  padding-right: 6px !important;
+}
+
+.aura-settings-view.active {
+  display: flex !important;
+}
+
+.aura-settings-container {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+}
+
+.aura-settings-section {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+}
+
+.aura-settings-sec-header {
+  font-size: 10.5px !important;
+  font-weight: 700 !important;
+  color: rgba(255, 255, 255, 0.45) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.8px !important;
+  margin-bottom: 2px !important;
+  padding-left: 4px !important;
+}
+
+body:not(.dark-theme) .aura-settings-sec-header,
+body[style*="light"] .aura-settings-sec-header,
+.light-theme .aura-settings-sec-header {
+  color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.aura-settings-card {
+  background: rgba(255, 255, 255, 0.03) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 12px !important;
+  padding: 16px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease !important;
+}
+
+.aura-settings-card:hover {
+  border-color: rgba(48, 135, 255, 0.15) !important;
+  box-shadow: 0 8px 32px rgba(48, 135, 255, 0.04) !important;
+}
+
+body:not(.dark-theme) .aura-settings-card,
+body[style*="light"] .aura-settings-card,
+.light-theme .aura-settings-card {
+  background: rgba(0, 0, 0, 0.015) !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02) !important;
+}
+
+body:not(.dark-theme) .aura-settings-card:hover,
+body[style*="light"] .aura-settings-card:hover,
+.light-theme .aura-settings-card:hover {
+  border-color: rgba(48, 135, 255, 0.25) !important;
+}
+
+.aura-settings-field {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  transition: all 0.3s ease !important;
+}
+
+.aura-settings-label {
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  color: rgba(255, 255, 255, 0.55) !important;
+  letter-spacing: 0.3px !important;
+  text-transform: uppercase !important;
+  padding-left: 2px !important;
+}
+
+body:not(.dark-theme) .aura-settings-label,
+body[style*="light"] .aura-settings-label,
+.light-theme .aura-settings-label {
+  color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.aura-api-key-wrapper {
+  display: flex !important;
+  gap: 8px !important;
+  position: relative !important;
+}
+
+.aura-settings-input {
+  flex: 1 !important;
+  height: 38px !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 8px !important;
+  padding: 0 34px 0 12px !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: 13px !important;
+  outline: none !important;
+  transition: all 0.2s ease !important;
+  width: 100% !important;
+}
+
+body:not(.dark-theme) .aura-settings-input,
+body[style*="light"] .aura-settings-input,
+.light-theme .aura-settings-input {
+  background: rgba(0, 0, 0, 0.02) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  color: rgba(0, 0, 0, 0.8) !important;
+}
+
+.aura-settings-input:focus {
+  border-color: rgba(48, 135, 255, 0.4) !important;
+  box-shadow: 0 0 8px rgba(48, 135, 255, 0.16) !important;
+}
+
+.aura-settings-btn-icon {
+  position: absolute !important;
+  right: 10px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer !important;
+  font-size: 14px !important;
+  color: rgba(255, 255, 255, 0.4) !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: color 0.2s ease !important;
+}
+
+body:not(.dark-theme) .aura-settings-btn-icon,
+body[style*="light"] .aura-settings-btn-icon,
+.light-theme .aura-settings-btn-icon {
+  color: rgba(0, 0, 0, 0.45) !important;
+}
+
+.aura-settings-btn-icon:hover {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+body:not(.dark-theme) .aura-settings-btn-icon:hover,
+body[style*="light"] .aura-settings-btn-icon:hover,
+.light-theme .aura-settings-btn-icon:hover {
+  color: rgba(0, 0, 0, 0.85) !important;
+}
+
+/* Custom Dropdown selects with premium Chevron down arrow */
+.aura-select-wrapper {
+  position: relative !important;
+  width: 100% !important;
+}
+
+.aura-settings-select {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  height: 38px !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 8px !important;
+  padding: 0 36px 0 12px !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: 13px !important;
+  outline: none !important;
+  cursor: pointer !important;
+  width: 100% !important;
+  transition: all 0.2s ease !important;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='rgba%28255,255,255,0.6%29' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 5 4 4 4-4'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 12px center !important;
+}
+
+body:not(.dark-theme) .aura-settings-select,
+body[style*="light"] .aura-settings-select,
+.light-theme .aura-settings-select {
+  background-color: rgba(0, 0, 0, 0.02) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  color: rgba(0, 0, 0, 0.8) !important;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='rgba%280,0,0,0.55%29' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 5 4 4 4-4'/%3E%3C/svg%3E") !important;
+}
+
+/* Specific styling for option items to ensure dark theme contrast */
+.aura-settings-select option {
+  background: #1f1f1f !important;
+  color: #fff !important;
+}
+
+body:not(.dark-theme) .aura-settings-select option,
+body[style*="light"] .aura-settings-select option,
+.light-theme .aura-settings-select option {
+  background: #fff !important;
+  color: #000 !important;
+}
+
+.aura-settings-select:focus {
+  border-color: rgba(48, 135, 255, 0.4) !important;
+  box-shadow: 0 0 8px rgba(48, 135, 255, 0.16) !important;
+}
+
+/* Toggle row alignment */
+.aura-settings-toggle-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+}
+
+.aura-toggle-meta {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 !important;
+  gap: 2px !important;
+}
+
+.aura-toggle-title {
+  font-size: 12.5px !important;
+  font-weight: 550 !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+body:not(.dark-theme) .aura-toggle-title,
+body[style*="light"] .aura-toggle-title,
+.light-theme .aura-toggle-title {
+  color: rgba(0, 0, 0, 0.85) !important;
+}
+
+.aura-toggle-desc {
+  font-size: 10.5px !important;
+  font-weight: 400 !important;
+  color: rgba(255, 255, 255, 0.45) !important;
+  line-height: 1.35 !important;
+}
+
+body:not(.dark-theme) .aura-toggle-desc,
+body[style*="light"] .aura-toggle-desc,
+.light-theme .aura-toggle-desc {
+  color: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Card inner dividers */
+.aura-settings-item-divider {
+  height: 1px !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  margin: 2px 0 !important;
+}
+
+body:not(.dark-theme) .aura-settings-item-divider,
+body[style*="light"] .aura-settings-item-divider,
+.light-theme .aura-settings-item-divider {
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Secured API Key box styling */
+.aura-api-key-secured-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  height: 38px !important;
+  box-sizing: border-box !important;
+}
+
+body:not(.dark-theme) .aura-api-key-secured-wrapper,
+body[style*="light"] .aura-api-key-secured-wrapper,
+.light-theme .aura-api-key-secured-wrapper {
+  background: rgba(0, 0, 0, 0.015) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+.aura-api-key-secured-text {
+  font-family: monospace !important;
+  font-size: 13px !important;
+  color: #10b981 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.aura-api-key-icon {
+  font-size: 14px !important;
+}
+
+.aura-status-badge {
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  padding: 2px 8px !important;
+  background: rgba(16, 185, 129, 0.1) !important;
+  border: 1px solid rgba(16, 185, 129, 0.15) !important;
+  border-radius: 12px !important;
+  font-family: 'Google Sans Flex', 'Google Sans', sans-serif !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+}
+
+.aura-settings-btn-circular {
+  width: 26px !important;
+  height: 26px !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: none !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+  transition: all 0.2s ease !important;
+}
+
+.aura-settings-btn-circular:hover {
+  background: rgba(48, 135, 255, 0.15) !important;
+  color: #3087ff !important;
+  box-shadow: 0 0 8px rgba(48, 135, 255, 0.2) !important;
+}
+
+body:not(.dark-theme) .aura-settings-btn-circular,
+body[style*="light"] .aura-settings-btn-circular,
+.light-theme .aura-settings-btn-circular {
+  background: rgba(0, 0, 0, 0.04) !important;
+  color: rgba(0, 0, 0, 0.6) !important;
+}
+
+body:not(.dark-theme) .aura-settings-btn-circular:hover,
+body[style*="light"] .aura-settings-btn-circular:hover,
+.light-theme .aura-settings-btn-circular:hover {
+  background: rgba(48, 135, 255, 0.1) !important;
+  color: #3087ff !important;
+}
+
+.aura-settings-actions {
+  display: flex !important;
+  gap: 10px !important;
+  margin-top: 4px !important;
+}
+
+.aura-settings-status-msg {
+  font-size: 11.5px !important;
+  margin-top: 4px !important;
+  font-weight: 500 !important;
+  transition: color 0.15s !important;
+  min-height: 16px !important;
+}
+
+.aura-settings-status-msg.success {
+  color: #34d399 !important;
+}
+
+.aura-settings-status-msg.error {
+  color: #f87171 !important;
+}
+
+.aura-settings-status-msg.info {
+  color: #3087ff !important;
+}
+
+/* Help Alert Callout Banner */
+.aura-settings-callout {
+  display: flex !important;
+  gap: 10px !important;
+  background: rgba(48, 135, 255, 0.03) !important;
+  border: 1px solid rgba(48, 135, 255, 0.1) !important;
+  border-radius: 10px !important;
+  padding: 12px 14px !important;
+  margin-top: 6px !important;
+  align-items: flex-start !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05) !important;
+}
+
+.aura-callout-icon {
+  font-size: 14px !important;
+  line-height: 1.3 !important;
+  flex-shrink: 0 !important;
+}
+
+.aura-callout-content {
+  font-size: 11px !important;
+  line-height: 1.4 !important;
+  color: rgba(255, 255, 255, 0.55) !important;
+}
+
+body:not(.dark-theme) .aura-callout-content,
+body[style*="light"] .aura-callout-content,
+.light-theme .aura-callout-content {
+  color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.aura-callout-link {
+  color: #3087ff !important;
+  text-decoration: none !important;
+  font-weight: 600 !important;
+  transition: border-bottom 0.15s ease !important;
+  border-bottom: 1px solid transparent !important;
+}
+
+.aura-callout-link:hover {
+  border-bottom-color: #3087ff !important;
+}
+
+/* API Badge indicator on follow-ups header */
+.aura-followups-badge {
+  font-size: 9px !important;
+  font-weight: bold !important;
+  text-transform: uppercase !important;
+  padding: 2px 5px !important;
+  border-radius: 4px !important;
+  background: rgba(99, 102, 241, 0.15) !important;
+  color: #a5b4fc !important;
+  border: 1px solid rgba(99, 102, 241, 0.3) !important;
+  margin-left: 8px !important;
+  user-select: none !important;
+  display: inline-block !important;
+}
+
+.aura-followups-badge.offline {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: rgba(255, 255, 255, 0.4) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  cursor: pointer !important;
+  transition: background 0.15s, color 0.15s !important;
+}
+
+.aura-followups-badge.offline:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* ---- 🔑 SECURE TEXT MASKING & PREMIUM STYLES ---- */
+.aura-masked-key {
+  -webkit-text-security: disk !important;
+}
+.aura-masked-key.show-text {
+  -webkit-text-security: none !important;
+}
+
+.aura-hidden {
+  display: none !important;
+}
+
+@keyframes aura-pulse-green {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+.aura-pulse-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #10b981 !important;
+  border-radius: 50% !important;
+  display: inline-block !important;
+  animation: aura-pulse-green 2s infinite !important;
+}
+
+
+/* ---- 🪄 PROMPT OPTIMIZER BUTTON ---- */
+#aura-prompt-optimizer-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  border: none !important;
+  background: transparent !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  margin: 0 4px !important;
+  transition: background-color 0.2s ease, color 0.2s ease !important;
+  flex-shrink: 0 !important;
+  position: relative !important;
+  vertical-align: middle !important;
+  align-self: center !important;
+  margin-top: auto !important;
+  margin-bottom: auto !important;
+}
+
+body:not(.dark-theme) #aura-prompt-optimizer-btn,
+body[style*="light"] #aura-prompt-optimizer-btn,
+.light-theme #aura-prompt-optimizer-btn {
+  border: none !important;
+  background: transparent !important;
+  color: rgba(0, 0, 0, 0.65) !important;
+}
+
+#aura-prompt-optimizer-btn:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+}
+
+body:not(.dark-theme) #aura-prompt-optimizer-btn:hover,
+body[style*="light"] #aura-prompt-optimizer-btn:hover,
+.light-theme #aura-prompt-optimizer-btn:hover {
+  background: rgba(0, 0, 0, 0.08) !important;
+  color: #000000 !important;
+}
+
+#aura-prompt-optimizer-btn:active {
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+body:not(.dark-theme) #aura-prompt-optimizer-btn:active,
+body[style*="light"] #aura-prompt-optimizer-btn:active,
+.light-theme #aura-prompt-optimizer-btn:active {
+  background: rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Premium AI loading state (No spinning, beautiful breathing pulse & shimmer) */
+@keyframes aura-pulse-loading {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes aura-shimmer {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+#aura-prompt-optimizer-btn.loading {
+  pointer-events: none !important;
+  animation: aura-pulse-loading 1.6s ease-in-out infinite !important;
+}
+
+#aura-prompt-optimizer-btn.loading svg {
+  animation: aura-shimmer 1.6s ease-in-out infinite !important;
+  color: #3087ff !important;
+}
+
+
+/* ---- 🪄 PROMPT OPTIMIZER FLOATING MENU ---- */
+.aura-prompt-optimizer-menu,
+.aura-prompt-optimizer-menu * {
+  font-family: 'Google Sans Flex', 'Google Sans', 'Helvetica Neue', sans-serif !important;
+}
+
+.aura-prompt-optimizer-menu {
+  position: absolute !important;
+  width: 280px !important;
+  max-height: 450px !important;
+  overflow-y: auto !important;
+  background: rgba(31, 31, 31, 0.85) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 14px !important;
+  padding: 6px !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4) !important;
+  z-index: 100000 !important; /* Extremely high to overlay native chat UI */
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  animation: aura-fade-in-up 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.aura-prompt-optimizer-menu::-webkit-scrollbar {
+  width: 4px !important;
+}
+.aura-prompt-optimizer-menu::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+.aura-prompt-optimizer-menu::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-radius: 10px !important;
+}
+body:not(.dark-theme) .aura-prompt-optimizer-menu::-webkit-scrollbar-thumb,
+body[style*="light"] .aura-prompt-optimizer-menu::-webkit-scrollbar-thumb,
+.light-theme .aura-prompt-optimizer-menu::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12) !important;
+}
+
+body:not(.dark-theme) .aura-prompt-optimizer-menu,
+body[style*="light"] .aura-prompt-optimizer-menu,
+.light-theme .aura-prompt-optimizer-menu {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15) !important;
+}
+
+@keyframes aura-fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.aura-opt-header {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: rgba(255, 255, 255, 0.4) !important;
+  padding: 6px 10px 4px 10px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+body:not(.dark-theme) .aura-opt-header,
+body[style*="light"] .aura-opt-header,
+.light-theme .aura-opt-header {
+  color: rgba(0, 0, 0, 0.45) !important;
+}
+
+.aura-opt-item {
+  display: flex !important;
+  align-items: flex-start !important;
+  padding: 8px 10px !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  gap: 10px !important;
+  transition: background 0.15s, transform 0.1s !important;
+}
+
+.aura-opt-item:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+body:not(.dark-theme) .aura-opt-item:hover,
+body[style*="light"] .aura-opt-item:hover,
+.light-theme .aura-opt-item:hover {
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+
+.aura-opt-item:active {
+  transform: scale(0.98) !important;
+}
+
+.aura-opt-icon {
+  font-size: 15px !important;
+  flex-shrink: 0 !important;
+  margin-top: 1px !important;
+}
+
+.aura-opt-meta {
+  display: flex !important;
+  flex-direction: column !important;
+  flex-grow: 1 !important;
+  min-width: 0 !important;
+}
+
+.aura-opt-title {
+  font-size: 12.5px !important;
+  font-weight: 550 !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  margin-bottom: 2px !important;
+}
+
+body:not(.dark-theme) .aura-opt-title,
+body[style*="light"] .aura-opt-title,
+.light-theme .aura-opt-title {
+  color: rgba(0, 0, 0, 0.85) !important;
+}
+
+.aura-opt-desc {
+  font-size: 10px !important;
+  color: rgba(255, 255, 255, 0.4) !important;
+  line-height: 1.3 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+body:not(.dark-theme) .aura-opt-desc,
+body[style*="light"] .aura-opt-desc,
+.light-theme .aura-opt-desc {
+  color: rgba(0, 0, 0, 0.45) !important;
+}
+
+
+/* ---- 🪄 API KEY WARNING TOAST ---- */
+.aura-toast-warning {
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  width: 320px !important;
+  background: rgba(31, 31, 31, 0.85) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1px solid rgba(239, 68, 68, 0.25) !important;
+  border-radius: 14px !important;
+  padding: 12px 14px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+  z-index: 100005 !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 12px !important;
+  cursor: pointer !important;
+  color: #fff !important;
+  animation: aura-toast-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: all 0.25s ease !important;
+}
+
+body:not(.dark-theme) .aura-toast-warning,
+body[style*="light"] .aura-toast-warning,
+.light-theme .aura-toast-warning {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+  color: #1f1f1f !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12) !important;
+}
+
+.aura-toast-warning:hover {
+  transform: translateY(-2px) !important;
+  border-color: rgba(48, 135, 255, 0.4) !important;
+  box-shadow: 0 12px 36px rgba(48, 135, 255, 0.2) !important;
+}
+
+.aura-toast-close-btn {
+  background: transparent !important;
+  border: none !important;
+  color: rgba(255, 255, 255, 0.4) !important;
+  font-size: 18px !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  margin-top: -2px !important;
+  transition: color 0.15s !important;
+}
+
+body:not(.dark-theme) .aura-toast-close-btn,
+body[style*="light"] .aura-toast-close-btn,
+.light-theme .aura-toast-close-btn {
+  color: rgba(0, 0, 0, 0.4) !important;
+}
+
+.aura-toast-close-btn:hover {
+  color: #f87171 !important;
+}
+
+@keyframes aura-toast-in {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* API Key Input highlight effect in settings */
+@keyframes aura-key-highlight {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(48, 135, 255, 0); }
+  50% { box-shadow: 0 0 0 4px rgba(48, 135, 255, 0.35); border-color: #3087ff; }
+}
+
+.aura-settings-highlight {
+  animation: aura-key-highlight 1.5s ease-in-out !important;
+}
+
+/* Aura Rich Notes Custom Styling */
+.aura-notes-editor {
+  overflow-y: auto !important;
+  user-select: text !important;
+  word-break: break-word !important;
+}
+
+.aura-notes-editor[contenteditable="false"] {
+  opacity: 0.55 !important;
+  cursor: not-allowed !important;
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+
+body:not(.dark-theme) .aura-notes-editor[contenteditable="false"],
+body[style*="light"] .aura-notes-editor[contenteditable="false"],
+.light-theme .aura-notes-editor[contenteditable="false"] {
+  background: rgba(0, 0, 0, 0.005) !important;
+}
+
+/* Simulated Placeholder for contenteditable */
+.aura-notes-editor:empty::before {
+  content: attr(placeholder) !important;
+  color: rgba(255, 255, 255, 0.3) !important;
+  pointer-events: none !important;
+  display: block !important;
+}
+
+/* Light Theme placeholder for contenteditable */
+body:not(.dark-theme) .aura-notes-editor:empty::before,
+body[style*="light"] .aura-notes-editor:empty::before,
+.light-theme .aura-notes-editor:empty::before {
+  color: rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Rich Note Attached Image Styling */
+.aura-notes-editor img,
+.aura-note-attached-img {
+  max-width: 100% !important;
+  max-height: 200px !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  margin: 6px 0 !important;
+  display: block !important;
+  cursor: zoom-in !important;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s !important;
+}
+
+.aura-notes-editor img:hover,
+.aura-note-attached-img:hover {
+  transform: translateY(-2px) scale(1.01) !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25), 0 0 8px rgba(48, 135, 255, 0.2) !important;
+  border-color: rgba(48, 135, 255, 0.3) !important;
+}
+
+/* Light Theme attached image */
+body:not(.dark-theme) .aura-notes-editor img,
+body:not(.dark-theme) .aura-note-attached-img,
+body[style*="light"] .aura-notes-editor img,
+body[style*="light"] .aura-note-attached-img,
+.light-theme .aura-notes-editor img,
+.light-theme .aura-note-attached-img {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+
+body:not(.dark-theme) .aura-notes-editor img:hover,
+body:not(.dark-theme) .aura-note-attached-img:hover,
+body[style*="light"] .aura-notes-editor img:hover,
+body[style*="light"] .aura-note-attached-img:hover,
+.light-theme .aura-notes-editor img:hover,
+.light-theme .aura-note-attached-img:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12), 0 0 6px rgba(48, 135, 255, 0.15) !important;
+  border-color: rgba(48, 135, 255, 0.4) !important;
+}
+
+/* --- PREMIUM GLASSMORPHIC LIGHTBOX VIEWER --- */
+.aura-lightbox {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 100000000 !important; /* Extremely high z-index to be on top of all Google overlays */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.aura-lightbox.active {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+.aura-lightbox-backdrop {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: rgba(10, 10, 15, 0.88) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  transition: background 0.3s !important;
+}
+
+.aura-lightbox-content {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 20px !important;
+  max-width: 90vw !important;
+  max-height: 90vh !important;
+  z-index: 10 !important;
+  transform: scale(0.92) !important;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.aura-lightbox.active .aura-lightbox-content {
+  transform: scale(1) !important;
+}
+
+.aura-lightbox-img {
+  width: auto !important;
+  height: auto !important;
+  min-width: 200px !important;
+  min-height: 150px !important;
+  max-width: 85vw !important;
+  max-height: 70vh !important;
+  object-fit: contain !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6) !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+}
+
+/* Light theme adjustments for backdrop */
+body:not(.dark-theme) .aura-lightbox-backdrop,
+body[style*="light"] .aura-lightbox-backdrop,
+.light-theme .aura-lightbox-backdrop {
+  background: rgba(250, 250, 250, 0.88) !important;
+}
+
+body:not(.dark-theme) .aura-lightbox-img,
+body[style*="light"] .aura-lightbox-img,
+.light-theme .aura-lightbox-img {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.15) !important;
+  background: rgba(0, 0, 0, 0.01) !important;
+}
+
+/* Lightbox Toolbar */
+.aura-lightbox-toolbar {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  background: rgba(255, 255, 255, 0.07) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  padding: 8px 16px !important;
+  border-radius: 100px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+body:not(.dark-theme) .aura-lightbox-toolbar,
+body[style*="light"] .aura-lightbox-toolbar,
+.light-theme .aura-lightbox-toolbar {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Lightbox Buttons */
+.aura-lightbox-btn {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  height: 36px !important;
+  padding: 0 16px !important;
+  border-radius: 100px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+}
+
+.aura-lightbox-btn svg {
+  flex-shrink: 0 !important;
+}
+
+.aura-lightbox-btn:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: #fff !important;
+  transform: translateY(-1px) !important;
+}
+
+.aura-lightbox-btn.copy {
+  background: rgba(48, 135, 255, 0.15) !important;
+  border-color: rgba(48, 135, 255, 0.3) !important;
+  color: #60a5fa !important;
+}
+
+.aura-lightbox-btn.copy:hover {
+  background: rgba(48, 135, 255, 0.25) !important;
+  border-color: rgba(48, 135, 255, 0.45) !important;
+  color: #93c5fd !important;
+}
+
+.aura-lightbox-btn.close:hover {
+  background: rgba(239, 68, 68, 0.15) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+  color: #f87171 !important;
+}
+
+/* Light theme lightbox buttons */
+body:not(.dark-theme) .aura-lightbox-btn,
+body[style*="light"] .aura-lightbox-btn,
+.light-theme .aura-lightbox-btn {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+  color: rgba(0, 0, 0, 0.75) !important;
+}
+
+body:not(.dark-theme) .aura-lightbox-btn:hover,
+body[style*="light"] .aura-lightbox-btn:hover,
+.light-theme .aura-lightbox-btn:hover {
+  background: rgba(0, 0, 0, 0.07) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  color: #000 !important;
+}
+
+body:not(.dark-theme) .aura-lightbox-btn.copy,
+body[style*="light"] .aura-lightbox-btn.copy,
+.light-theme .aura-lightbox-btn.copy {
+  background: rgba(48, 135, 255, 0.08) !important;
+  border-color: rgba(48, 135, 255, 0.2) !important;
+  color: #2563eb !important;
+}
+
+body:not(.dark-theme) .aura-lightbox-btn.copy:hover,
+body[style*="light"] .aura-lightbox-btn.copy:hover,
+.light-theme .aura-lightbox-btn.copy:hover {
+  background: rgba(48, 135, 255, 0.15) !important;
+  border-color: rgba(48, 135, 255, 0.3) !important;
+  color: #1d4ed8 !important;
+}
+
+body:not(.dark-theme) .aura-lightbox-btn.close:hover,
+body[style*="light"] .aura-lightbox-btn.close:hover,
+.light-theme .aura-lightbox-btn.close:hover {
+  background: rgba(220, 38, 38, 0.08) !important;
+  border-color: rgba(220, 38, 38, 0.2) !important;
+  color: #dc2626 !important;
+}
+
+/* --- PREMIUM RICH TEXT FORMATTING TOOLBAR --- */
+.aura-notes-toolbar {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+  padding: 6px 8px !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-radius: 8px !important;
+  margin-bottom: 8px !important;
+}
+
+body:not(.dark-theme) .aura-notes-toolbar,
+body[style*="light"] .aura-notes-toolbar,
+.light-theme .aura-notes-toolbar {
+  background: rgba(0, 0, 0, 0.02) !important;
+  border-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+.aura-tb-select {
+  background: rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 6px !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  padding: 4px 6px !important;
+  outline: none !important;
+  cursor: pointer !important;
+  font-family: 'Google Sans', 'Google Sans Flex', sans-serif !important;
+  transition: border-color 0.2s, background 0.2s !important;
+}
+
+.aura-tb-select option {
+  background: #171717 !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+body:not(.dark-theme) .aura-tb-select option,
+body[style*="light"] .aura-tb-select option,
+.light-theme .aura-tb-select option {
+  background: #ffffff !important;
+  color: rgba(0, 0, 0, 0.8) !important;
+}
+
+body:not(.dark-theme) .aura-tb-select,
+body[style*="light"] .aura-tb-select,
+.light-theme .aura-tb-select {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  color: rgba(0, 0, 0, 0.75) !important;
+}
+
+.aura-tb-select:hover {
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  background: rgba(0, 0, 0, 0.35) !important;
+}
+
+body:not(.dark-theme) .aura-tb-select:hover,
+body[style*="light"] .aura-tb-select:hover,
+.light-theme .aura-tb-select:hover {
+  border-color: rgba(0, 0, 0, 0.2) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+
+.aura-tb-btn-group {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+#aura-tb-font {
+  max-width: 105px !important;
+}
+
+#aura-tb-size {
+  max-width: 85px !important;
+}
+
+.aura-tb-btn {
+  width: 24px !important;
+  height: 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: 6px !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+  font-size: 11px !important;
+  cursor: pointer !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+body:not(.dark-theme) .aura-tb-btn,
+body[style*="light"] .aura-tb-btn,
+.light-theme .aura-tb-btn {
+  color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.aura-tb-btn:hover {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+}
+
+body:not(.dark-theme) .aura-tb-btn:hover,
+body[style*="light"] .aura-tb-btn:hover,
+.light-theme .aura-tb-btn:hover {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+  color: #000000 !important;
+}
+
+.aura-tb-btn:active {
+  transform: scale(0.95) !important;
+}
+
+/* --- CUSTOM IMAGE CONTEXT MENU --- */
+.aura-image-context-menu {
+  position: fixed !important;
+  z-index: 10000000 !important;
+  background: rgba(23, 23, 23, 0.85) !important;
+  backdrop-filter: blur(14px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 8px !important;
+  padding: 5px 0 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+  min-width: 140px !important;
+  font-family: 'Google Sans', 'Google Sans Flex', sans-serif !important;
+  animation: aura-menu-fade-in 0.15s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+@keyframes aura-menu-fade-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+body:not(.dark-theme) .aura-image-context-menu,
+body[style*="light"] .aura-image-context-menu,
+.light-theme .aura-image-context-menu {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+}
+
+.aura-image-context-menu-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 8px 12px !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: background 0.15s, color 0.15s !important;
+}
+
+body:not(.dark-theme) .aura-image-context-menu-item,
+body[style*="light"] .aura-image-context-menu-item,
+.light-theme .aura-image-context-menu-item {
+  color: rgba(0, 0, 0, 0.75) !important;
+}
+
+.aura-image-context-menu-item:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+}
+
+body:not(.dark-theme) .aura-image-context-menu-item:hover,
+body[style*="light"] .aura-image-context-menu-item:hover,
+.light-theme .aura-image-context-menu-item:hover {
+  background: rgba(0, 0, 0, 0.04) !important;
+  color: #000000 !important;
+}
+
+.aura-image-context-menu-item.danger {
+  color: #f87171 !important;
+}
+
+.aura-image-context-menu-item.danger:hover {
+  background: rgba(239, 68, 68, 0.15) !important;
+  color: #ef4444 !important;
+}
+
+/* --- PREMIUM TOAST NOTIFICATION SYSTEM --- */
+.aura-dynamic-toast {
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  z-index: 100000000 !important;
+  background: rgba(23, 23, 23, 0.8) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 50px !important;
+  padding: 10px 20px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  color: #ffffff !important;
+  font-family: 'Google Sans', 'Google Sans Flex', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  animation: aura-toast-enter 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  pointer-events: none !important;
+  transition: opacity 0.4s, transform 0.4s !important;
+}
+
+body:not(.dark-theme) .aura-dynamic-toast,
+body[style*="light"] .aura-dynamic-toast,
+.light-theme .aura-dynamic-toast {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+  color: #1f2937 !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+}
+
+.aura-dynamic-toast.success .aura-toast-icon {
+  color: #10b981 !important;
+}
+
+.aura-dynamic-toast.error .aura-toast-icon {
+  color: #ef4444 !important;
+}
+
+.aura-dynamic-toast.fade-out {
+  opacity: 0 !important;
+  transform: translateY(10px) !important;
+}
+
+@keyframes aura-toast-enter {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   AURA PREMIUM ADDITIONAL COMPONENTS STYLE
+   ========================================================================== */
+
+/* 1. Bidirectional HEX Color Picker */
+.aura-tb-color-container {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 2px 6px !important;
+  border-radius: 6px !important;
+  background: rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  height: 24px !important;
+}
+
+body:not(.dark-theme) .aura-tb-color-container,
+body[style*="light"] .aura-tb-color-container,
+.light-theme .aura-tb-color-container {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.aura-tb-color-picker {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  width: 16px !important;
+  height: 16px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  background: transparent !important;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
+}
+
+.aura-tb-color-picker::-webkit-color-swatch-wrapper {
+  padding: 0 !important;
+  border-radius: 4px !important;
+}
+
+.aura-tb-color-picker::-webkit-color-swatch {
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 4px !important;
+}
+
+body:not(.dark-theme) .aura-tb-color-picker::-webkit-color-swatch,
+body[style*="light"] .aura-tb-color-picker::-webkit-color-swatch,
+.light-theme .aura-tb-color-picker::-webkit-color-swatch {
+  border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+.aura-tb-color-hex {
+  width: 54px !important;
+  background: transparent !important;
+  border: none !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-size: 10px !important;
+  font-family: monospace !important;
+  outline: none !important;
+  padding: 0 !important;
+  text-transform: uppercase !important;
+}
+
+body:not(.dark-theme) .aura-tb-color-hex,
+body[style*="light"] .aura-tb-color-hex,
+.light-theme .aura-tb-color-hex {
+  color: rgba(0, 0, 0, 0.75) !important;
+}
+
+/* 2. Model Selector & Small Test Connection Button */
+.aura-model-select-container {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+}
+
+.aura-settings-btn-circular-small {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  cursor: pointer !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
+}
+
+.aura-settings-btn-circular-small:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+}
+
+body:not(.dark-theme) .aura-settings-btn-circular-small,
+body[style*="light"] .aura-settings-btn-circular-small,
+.light-theme .aura-settings-btn-circular-small {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  color: rgba(0, 0, 0, 0.7) !important;
+}
+
+body:not(.dark-theme) .aura-settings-btn-circular-small:hover,
+body[style*="light"] .aura-settings-btn-circular-small:hover,
+.light-theme .aura-settings-btn-circular-small:hover {
+  background: rgba(0, 0, 0, 0.06) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  color: #000000 !important;
+}
+
+.aura-settings-btn-circular-small:active {
+  transform: scale(0.9) !important;
+}
+
+.aura-settings-btn-circular-small.loading svg {
+  animation: aura-spin 1s linear infinite !important;
+}
+
+@keyframes aura-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 3. Google AI Studio API Rate Limits Dashboard */
+.aura-rate-limits-dashboard {
+  margin-top: 16px !important;
+  padding: 12px !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+}
+
+body:not(.dark-theme) .aura-rate-limits-dashboard,
+body[style*="light"] .aura-rate-limits-dashboard,
+.light-theme .aura-rate-limits-dashboard {
+  background: rgba(0, 0, 0, 0.02) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05) !important;
+}
+
+.aura-rate-title {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.5px !important;
+  text-transform: uppercase !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+  margin-bottom: 8px !important;
+  text-align: center !important;
+}
+
+body:not(.dark-theme) .aura-rate-title,
+body[style*="light"] .aura-rate-title,
+.light-theme .aura-rate-title {
+  color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.aura-rate-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  font-size: 11px !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+body:not(.dark-theme) .aura-rate-table,
+body[style*="light"] .aura-rate-table,
+.light-theme .aura-rate-table {
+  color: rgba(0, 0, 0, 0.8) !important;
+}
+
+.aura-rate-table th {
+  text-align: left !important;
+  padding: 6px 8px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-weight: 500 !important;
+}
+
+body:not(.dark-theme) .aura-rate-table th,
+body[style*="light"] .aura-rate-table th,
+.light-theme .aura-rate-table th {
+  border-bottom-color: rgba(0, 0, 0, 0.08) !important;
+  color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.aura-rate-table td {
+  padding: 8px 8px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
+  transition: all 0.25s ease !important;
+}
+
+body:not(.dark-theme) .aura-rate-table td,
+body[style*="light"] .aura-rate-table td,
+.light-theme .aura-rate-table td {
+  border-bottom-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Active Row Highlight: #8ab4f8 in dark / #1a73e8 in light */
+.aura-rate-table tr.aura-rate-active-row td {
+  font-weight: 600 !important;
+  color: #8ab4f8 !important;
+  background: rgba(138, 180, 248, 0.1) !important;
+}
+
+.aura-rate-table tr.aura-rate-active-row td:first-child {
+  border-top-left-radius: 6px !important;
+  border-bottom-left-radius: 6px !important;
+}
+
+.aura-rate-table tr.aura-rate-active-row td:last-child {
+  border-top-right-radius: 6px !important;
+  border-bottom-right-radius: 6px !important;
+}
+
+body:not(.dark-theme) .aura-rate-table tr.aura-rate-active-row td,
+body[style*="light"] .aura-rate-table tr.aura-rate-active-row td,
+.light-theme .aura-rate-table tr.aura-rate-active-row td {
+  color: #1a73e8 !important;
+  background: rgba(26, 115, 232, 0.08) !important;
+}
+
+/* ---- 📎 VAXLOU FILE CARD & MEDIA ATTACHMENTS ---- */
+.aura-note-file-card {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  margin: 10px 0 !important;
+  padding: 10px 12px !important;
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  user-select: none !important;
+  transition: all 0.2s ease !important;
+}
+
+body:not(.dark-theme) .aura-note-file-card,
+body[style*="light"] .aura-note-file-card,
+.light-theme .aura-note-file-card {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+}
+
+.aura-note-file-card:hover {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+body:not(.dark-theme) .aura-note-file-card:hover,
+body[style*="light"] .aura-note-file-card:hover,
+.light-theme .aura-note-file-card:hover {
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+.aura-file-card-inner {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  width: 100% !important;
+}
+
+.aura-file-card-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 18px !important;
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 8px !important;
+  flex-shrink: 0 !important;
+  transition: transform 0.2s ease !important;
+}
+
+.aura-note-file-card:hover .aura-file-card-icon {
+  transform: scale(1.05) !important;
+}
+
+.aura-file-card-details {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+.aura-file-card-name {
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+  overflow: hidden !important;
+}
+
+body:not(.dark-theme) .aura-file-card-name,
+body[style*="light"] .aura-file-card-name,
+.light-theme .aura-file-card-name {
+  color: rgba(0, 0, 0, 0.85) !important;
+}
+
+.aura-file-card-size {
+  font-size: 10px !important;
+  color: rgba(255, 255, 255, 0.45) !important;
+  font-weight: 400 !important;
+}
+
+body:not(.dark-theme) .aura-file-card-size,
+body[style*="light"] .aura-file-card-size,
+.light-theme .aura-file-card-size {
+  color: rgba(0, 0, 0, 0.45) !important;
+}
+
+.aura-file-card-download {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 50% !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+  background: transparent !important;
+  transition: all 0.2s ease !important;
+  cursor: pointer !important;
+  flex-shrink: 0 !important;
+  text-decoration: none !important;
+}
+
+body:not(.dark-theme) .aura-file-card-download,
+body[style*="light"] .aura-file-card-download,
+.light-theme .aura-file-card-download {
+  color: rgba(0, 0, 0, 0.55) !important;
+}
+
+.aura-file-card-download:hover {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+body:not(.dark-theme) .aura-file-card-download:hover,
+body[style*="light"] .aura-file-card-download:hover,
+.light-theme .aura-file-card-download:hover {
+  color: #000000 !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Category Accent Styles */
+/* PDF: Red */
+.aura-file-pdf .aura-file-card-icon {
+  background: rgba(239, 68, 68, 0.12) !important;
+  border: 1px solid rgba(239, 68, 68, 0.18) !important;
+}
+/* Word: Blue */
+.aura-file-word .aura-file-card-icon {
+  background: rgba(59, 130, 246, 0.12) !important;
+  border: 1px solid rgba(59, 130, 246, 0.18) !important;
+}
+/* Excel: Green */
+.aura-file-excel .aura-file-card-icon {
+  background: rgba(16, 185, 129, 0.12) !important;
+  border: 1px solid rgba(16, 185, 129, 0.18) !important;
+}
+/* PowerPoint: Orange */
+.aura-file-ppt .aura-file-card-icon {
+  background: rgba(249, 115, 22, 0.12) !important;
+  border: 1px solid rgba(249, 115, 22, 0.18) !important;
+}
+/* Zip: Purple */
+.aura-file-zip .aura-file-card-icon {
+  background: rgba(139, 92, 246, 0.12) !important;
+  border: 1px solid rgba(139, 92, 246, 0.18) !important;
+}
+/* Exe: Indigo */
+.aura-file-exe .aura-file-card-icon {
+  background: rgba(99, 102, 241, 0.12) !important;
+  border: 1px solid rgba(99, 102, 241, 0.18) !important;
+}
+/* Audio: Pink */
+.aura-file-audio .aura-file-card-icon {
+  background: rgba(236, 72, 153, 0.12) !important;
+  border: 1px solid rgba(236, 72, 153, 0.18) !important;
+}
+/* Video: Cyan */
+.aura-file-video .aura-file-card-icon {
+  background: rgba(6, 182, 212, 0.12) !important;
+  border: 1px solid rgba(6, 182, 212, 0.18) !important;
+}
+/* Generic: Gray */
+.aura-file-generic .aura-file-card-icon {
+  background: rgba(13, 148, 136, 0.12) !important;
+  border: 1px solid rgba(13, 148, 136, 0.18) !important;
+}
+
+/* Embedded Media Players Layout */
+.aura-file-card-media-wrapper {
+  margin-top: 4px !important;
+  width: 100% !important;
+}
+
+.aura-note-embedded-audio {
+  width: 100% !important;
+  height: 32px !important;
+  outline: none !important;
+  border-radius: 6px !important;
+}
+
+.aura-note-embedded-video {
+  width: 100% !important;
+  max-height: 220px !important;
+  border-radius: 8px !important;
+  background: #000000 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Premium Text File Attachment Content Previews */
+.aura-file-card-text-preview {
+  margin-top: 8px !important;
+  background: rgba(0, 0, 0, 0.22) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-radius: 6px !important;
+  padding: 8px !important;
+  max-height: 80px !important;
+  overflow-y: auto !important;
+  pointer-events: auto !important;
+}
+
+.aura-file-card-text-preview pre {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-family: 'Courier New', Courier, monospace !important;
+  font-size: 11px !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+  white-space: pre-wrap !important;
+  word-break: break-all !important;
+  text-align: left !important;
+}
+
+/* Custom Scrollbar for file preview */
+.aura-file-card-text-preview::-webkit-scrollbar {
+  width: 4px !important;
+}
+.aura-file-card-text-preview::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+.aura-file-card-text-preview::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 2px !important;
+}
+.aura-file-card-text-preview::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Light Theme support for preview card content */
+body:not(.dark-theme) .aura-file-card-text-preview,
+body[style*="light"] .aura-file-card-text-preview,
+.light-theme .aura-file-card-text-preview {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+body:not(.dark-theme) .aura-file-card-text-preview pre,
+body[style*="light"] .aura-file-card-text-preview pre,
+.light-theme .aura-file-card-text-preview pre {
+  color: rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Premium Glassmorphic File Preview Modal Styles */
+.aura-file-preview-modal {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 100000002 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(0, 0, 0, 0.65) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease !important;
+}
+.aura-file-preview-modal.active {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+.aura-file-preview-backdrop {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  cursor: pointer !important;
+}
+.aura-file-preview-content {
+  position: relative !important;
+  width: 90% !important;
+  max-width: 800px !important;
+  height: 80% !important;
+  background: rgba(18, 18, 18, 0.8) !important;
+  backdrop-filter: blur(25px) !important;
+  -webkit-backdrop-filter: blur(25px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.6) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  transform: scale(0.95);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+.aura-file-preview-modal.active .aura-file-preview-content {
+  transform: scale(1) !important;
+}
+.aura-file-preview-header {
+  padding: 16px 20px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+}
+.aura-file-preview-title {
+  font-family: 'Outfit', sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  color: #ffffff !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  max-width: 60% !important;
+}
+.aura-file-preview-actions {
+  display: flex !important;
+  gap: 8px !important;
+}
+.aura-file-preview-body {
+  flex: 1 !important;
+  padding: 20px !important;
+  overflow-y: auto !important;
+  background: rgba(0, 0, 0, 0.15) !important;
+}
+.aura-file-preview-text {
+  margin: 0 !important;
+  font-family: 'Courier New', Courier, monospace !important;
+  font-size: 12.5px !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  white-space: pre-wrap !important;
+  word-break: break-all !important;
+  line-height: 1.6 !important;
+  text-align: left !important;
+}
+.aura-file-preview-btn {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 8px !important;
+  color: #ffffff !important;
+  padding: 6px 12px !important;
+  font-size: 12.5px !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  transition: all 0.2s ease !important;
+  outline: none !important;
+}
+.aura-file-preview-btn:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+}
+.aura-file-preview-btn svg {
+  flex-shrink: 0 !important;
+}
+
+/* Light Theme support for preview modal */
+body:not(.dark-theme) .aura-file-preview-content,
+body[style*="light"] .aura-file-preview-content,
+.light-theme .aura-file-preview-content {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.12) !important;
+}
+body:not(.dark-theme) .aura-file-preview-header,
+body[style*="light"] .aura-file-preview-header,
+.light-theme .aura-file-preview-header {
+  border-bottom-color: rgba(0, 0, 0, 0.06) !important;
+  background: rgba(0, 0, 0, 0.01) !important;
+}
+body:not(.dark-theme) .aura-file-preview-title,
+body[style*="light"] .aura-file-preview-title,
+.light-theme .aura-file-preview-title {
+  color: #1f1f1f !important;
+}
+body:not(.dark-theme) .aura-file-preview-body,
+body[style*="light"] .aura-file-preview-body,
+.light-theme .aura-file-preview-body {
+  background: rgba(0, 0, 0, 0.01) !important;
+}
+body:not(.dark-theme) .aura-file-preview-text,
+body[style*="light"] .aura-file-preview-text,
+.light-theme .aura-file-preview-text {
+  color: #2f2f2f !important;
+}
+body:not(.dark-theme) .aura-file-preview-btn,
+body[style*="light"] .aura-file-preview-btn,
+.light-theme .aura-file-preview-btn {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  color: #1f1f1f !important;
+}
+body:not(.dark-theme) .aura-file-preview-btn:hover,
+body[style*="light"] .aura-file-preview-btn:hover,
+.light-theme .aura-file-preview-btn:hover {
+  background: rgba(0, 0, 0, 0.08) !important;
+  border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+/* iOS Drag-to-Delete Toolbar Transition */
+.aura-notes-toolbar {
+  position: relative !important;
+  z-index: 100 !important;
+  transition: background 0.3s ease, border-color 0.3s ease !important;
+}
+.aura-notes-toolbar.aura-toolbar-delete-mode {
+  background: rgba(220, 38, 38, 0.12) !important;
+  border-color: rgba(220, 38, 38, 0.4) !important;
+  box-shadow: 0 0 15px rgba(220, 38, 38, 0.25) !important;
+}
+
+/* Hide toolbar buttons in delete mode */
+.aura-notes-toolbar.aura-toolbar-delete-mode > *:not(.aura-tb-trash-zone) {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(-5px) !important;
+  transition: opacity 0.2s ease, transform 0.2s ease !important;
+}
+
+/* Trash Zone Container */
+.aura-tb-trash-zone {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: scale(0.95) !important;
+  transition: opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  z-index: 10 !important;
+}
+
+.aura-notes-toolbar.aura-toolbar-delete-mode .aura-tb-trash-zone {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transform: scale(1) !important;
+}
+
+.aura-tb-trash-icon-wrapper {
+  color: #ef4444 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+.aura-tb-trash-label {
+  font-family: 'Outfit', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #ef4444 !important;
+  text-shadow: 0 0 8px rgba(239, 68, 68, 0.3) !important;
+  transition: transform 0.2s ease !important;
+}
+
+/* iOS Drop Hover State */
+.aura-tb-trash-zone.aura-drag-over {
+  background: rgba(220, 38, 38, 0.18) !important;
+}
+.aura-tb-trash-zone.aura-drag-over .aura-tb-trash-icon-wrapper {
+  transform: scale(1.35) rotate(-10deg) !important;
+  color: #f87171 !important;
+  filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.8)) !important;
+}
+.aura-tb-trash-zone.aura-drag-over .aura-tb-trash-label {
+  transform: scale(1.05) !important;
+  color: #f87171 !important;
+}
+
+/* Dragging visual adjustments on the dragged item */
+.aura-note-attached-img[draggable="true"],
+.aura-note-file-card[draggable="true"] {
+  cursor: grab !important;
+}
+.aura-note-attached-img.aura-dragging,
+.aura-note-file-card.aura-dragging {
+  opacity: 0.4 !important;
+  border: 2px dashed #ef4444 !important;
+  transform: scale(0.98) !important;
+  cursor: grabbing !important;
+}
+
+/* iOS Delete Pop Out Animation */
+@keyframes aura-ios-delete {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+  100% { transform: scale(0); opacity: 0; filter: blur(5px); }
+}
+.aura-ios-deleting {
+  animation: aura-ios-delete 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97) both !important;
+}
+
+/* Vertical scope switch slider */
+.aura-switch.vertical {
+  position: relative !important;
+  display: inline-flex !important;
+  width: 16px !important;
+  height: 32px !important;
+  flex-shrink: 0 !important;
+  margin: 0 4px !important;
+  vertical-align: middle !important;
+}
+
+.aura-switch.vertical input {
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.aura-switch.vertical .aura-switch-slider {
+  position: absolute !important;
+  cursor: pointer !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  transition: .3s ease !important;
+  border-radius: 10px !important;
+}
+
+body:not(.dark-theme) .aura-switch.vertical .aura-switch-slider,
+body[style*="light"] .aura-switch.vertical .aura-switch-slider,
+.light-theme .aura-switch.vertical .aura-switch-slider {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.aura-switch.vertical input:checked + .aura-switch-slider {
+  background-color: #10b981 !important;
+  border-color: #059669 !important;
+}
+
+.aura-switch.vertical .aura-switch-slider:before {
+  position: absolute !important;
+  content: "" !important;
+  height: 10px !important;
+  width: 10px !important;
+  left: 2px !important;
+  bottom: 2px !important;
+  background-color: #ffffff !important;
+  transition: .3s ease !important;
+  border-radius: 50% !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3) !important;
+}
+
+.aura-switch.vertical input:checked + .aura-switch-slider:before {
+  transform: translateY(-16px) !important;
+}
+
+
+/* ---- 📊 API LIMITS & SHORTCUTS DASHBOARD ---- */
+.aura-api-limits-shortcuts {
+  margin-top: 18px !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  padding-top: 16px !important;
+}
+
+.aura-api-links-container {
+  display: flex !important;
+  gap: 10px !important;
+  width: 100% !important;
+}
+
+.aura-api-shortcut-card {
+  flex: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 10px 12px !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-radius: 10px !important;
+  text-decoration: none !important;
+  color: #fff !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.aura-api-shortcut-card:hover {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(48, 135, 255, 0.25) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.aura-api-shortcut-icon {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  transition: all 0.25s !important;
+}
+
+.aura-api-shortcut-card:hover .aura-api-shortcut-icon {
+  transform: scale(1.05) !important;
+}
+
+.google-color {
+  color: #4285f4 !important;
+  background: rgba(66, 133, 244, 0.1) !important;
+}
+
+.groq-color {
+  color: #f59e0b !important;
+  background: rgba(245, 158, 11, 0.1) !important;
+}
+
+.aura-api-shortcut-meta {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+}
+
+.aura-api-shortcut-name {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.aura-api-shortcut-desc {
+  font-size: 9.5px !important;
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+
+body:not(.dark-theme) .aura-api-shortcut-card,
+body[style*="light"] .aura-api-shortcut-card,
+.light-theme .aura-api-shortcut-card {
+  background: rgba(0, 0, 0, 0.015) !important;
+  border-color: rgba(0, 0, 0, 0.05) !important;
+  color: #1f2937 !important;
+}
+
+body:not(.dark-theme) .aura-api-shortcut-card:hover,
+body[style*="light"] .aura-api-shortcut-card:hover,
+.light-theme .aura-api-shortcut-card:hover {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border-color: rgba(48, 135, 255, 0.4) !important;
+}
+
+body:not(.dark-theme) .aura-api-shortcut-name,
+body[style*="light"] .aura-api-shortcut-name,
+.light-theme .aura-api-shortcut-name {
+  color: #1f2937 !important;
+}
+
+body:not(.dark-theme) .aura-api-shortcut-desc,
+body[style*="light"] .aura-api-shortcut-desc,
+.light-theme .aura-api-shortcut-desc {
+  color: rgba(0, 0, 0, 0.5) !important;
+}
+
+
+/* ---- 🛡️ MODERN CONNECTION STATUS BADGE ---- */
+.aura-status-badge-modern {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 10px 14px !important;
+  border-radius: 8px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  margin-top: 10px !important;
+  transition: all 0.3s ease !important;
+  line-height: 1.4 !important;
+}
+
+.aura-status-badge-modern.idle {
+  background: rgba(48, 135, 255, 0.05) !important;
+  border: 1px solid rgba(48, 135, 255, 0.15) !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.aura-status-badge-modern.testing {
+  background: rgba(245, 158, 11, 0.05) !important;
+  border: 1px solid rgba(245, 158, 11, 0.15) !important;
+  color: #f59e0b !important;
+}
+
+.aura-status-badge-modern.success {
+  background: rgba(16, 185, 129, 0.05) !important;
+  border: 1px solid rgba(16, 185, 129, 0.15) !important;
+  color: #10b981 !important;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.1) !important;
+}
+
+.aura-status-badge-modern.error {
+  background: rgba(239, 68, 68, 0.05) !important;
+  border: 1px solid rgba(239, 68, 68, 0.15) !important;
+  color: #ef4444 !important;
+  cursor: help !important;
+}
+
+body:not(.dark-theme) .aura-status-badge-modern.idle,
+body[style*="light"] .aura-status-badge-modern.idle,
+.light-theme .aura-status-badge-modern.idle {
+  background: rgba(0, 0, 0, 0.015) !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+  color: #374151 !important;
+}
+
+body:not(.dark-theme) .aura-status-badge-modern.testing,
+body[style*="light"] .aura-status-badge-modern.testing,
+.light-theme .aura-status-badge-modern.testing {
+  background: rgba(245, 158, 11, 0.03) !important;
+  border-color: rgba(245, 158, 11, 0.2) !important;
+}
+
+body:not(.dark-theme) .aura-status-badge-modern.success,
+body[style*="light"] .aura-status-badge-modern.success,
+.light-theme .aura-status-badge-modern.success {
+  background: rgba(16, 185, 129, 0.03) !important;
+  border-color: rgba(16, 185, 129, 0.2) !important;
+}
+
+body:not(.dark-theme) .aura-status-badge-modern.error,
+body[style*="light"] .aura-status-badge-modern.error,
+.light-theme .aura-status-badge-modern.error {
+  background: rgba(239, 68, 68, 0.03) !important;
+  border-color: rgba(239, 68, 68, 0.2) !important;
+}
+
+.aura-status-pulse {
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+  display: inline-block !important;
+  position: relative !important;
+  flex-shrink: 0 !important;
+}
+
+.aura-status-pulse::after {
+  content: '' !important;
+  position: absolute !important;
+  top: -4px !important;
+  left: -4px !important;
+  right: -4px !important;
+  bottom: -4px !important;
+  border-radius: 50% !important;
+  border: 2px solid currentColor !important;
+  opacity: 0 !important;
+  animation: aura-pulse-grow 1.6s infinite !important;
+}
+
+.aura-status-pulse.blue {
+  background-color: #3087ff !important;
+  color: #3087ff !important;
+}
+
+.aura-status-pulse.amber {
+  background-color: #f59e0b !important;
+  color: #f59e0b !important;
+}
+
+.aura-status-pulse.green {
+  background-color: #10b981 !important;
+  color: #10b981 !important;
+}
+
+.aura-status-pulse.red {
+  background-color: #ef4444 !important;
+  color: #ef4444 !important;
+}
+
+@keyframes aura-pulse-grow {
+  0% {
+    transform: scale(0.6) !important;
+    opacity: 0.8 !important;
+  }
+  100% {
+    transform: scale(1.6) !important;
+    opacity: 0 !important;
+  }
+}
+
+/* ---- 🔑 MULTI-SLOT API CONFIGURATION STYLES ---- */
+.aura-settings-slots-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.aura-settings-slot-row {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 12px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.aura-settings-slot-row::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: transparent;
+  transition: background-color 0.25s ease;
+}
+
+.aura-settings-slot-row.active {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(99, 102, 241, 0.35); /* Elegant Indigo border */
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.2), inset 0 0 12px rgba(99, 102, 241, 0.05);
+}
+
+.aura-settings-slot-row.active::before {
+  background: #6366f1; /* Premium Indigo accent bar */
+}
+
+.aura-settings-slot-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  padding-bottom: 6px;
+  margin-bottom: 2px;
+}
+
+.aura-slot-radio-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  transition: color 0.2s ease;
+}
+
+.aura-settings-slot-row.active .aura-slot-radio-label {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.aura-slot-radio-label input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  outline: none;
+  display: inline-grid;
+  place-content: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  margin: 0;
+}
+
+.aura-slot-radio-label input[type="radio"]:hover {
+  border-color: rgba(99, 102, 241, 0.8);
+}
+
+.aura-slot-radio-label input[type="radio"]:checked {
+  border-color: #6366f1;
+  background: transparent;
+}
+
+.aura-slot-radio-label input[type="radio"]::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  transform: scale(0);
+  transition: 150ms transform ease-in-out;
+  background-color: #6366f1;
+}
+
+.aura-slot-radio-label input[type="radio"]:checked::before {
+  transform: scale(1);
+}
+
+.aura-settings-slot-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
