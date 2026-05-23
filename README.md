@@ -41,8 +41,8 @@ Tiện ích nâng cao ứng dụng web Google Gemini mặc định bằng cách 
 
  1. Sao chép kho lưu trữ về máy cục bộ:
 ```bash
-   git clone [https://github.com/vaxlou/extension.git](https://github.com/vaxlou/extension.git)
-   cd extension
+   git clone https://github.com/bachhn25810320367/VaxlouGemini.git
+   cd VaxlouGemini
 ```
  2. Cài đặt các gói phụ thuộc trong không gian làm việc (workspace):
 
